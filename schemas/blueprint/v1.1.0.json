@@ -1,0 +1,1656 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://videoformation.dev/schemas/blueprint/v1.1.0.json",
+  "title": "Universal Video Blueprint",
+  "description": "JSON-driven video production specification format for videoformation pipeline.",
+  "type": "object",
+  "required": [
+    "project_metadata",
+    "global_settings",
+    "production_sequence"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri",
+      "description": "URI reference to this schema"
+    },
+    "project_metadata": {
+      "$ref": "#/$defs/ProjectMetadata"
+    },
+    "global_settings": {
+      "$ref": "#/$defs/GlobalSettings"
+    },
+    "localization": {
+      "$ref": "#/$defs/Localization"
+    },
+    "rights_and_credits": {
+      "$ref": "#/$defs/RightsAndCredits"
+    },
+    "production_tracking_light": {
+      "$ref": "#/$defs/ProductionTracking"
+    },
+    "asset_manifest": {
+      "$ref": "#/$defs/AssetManifest"
+    },
+    "delivery_profiles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/DeliveryProfile"
+      }
+    },
+    "production_sequence": {
+      "$ref": "#/$defs/ProductionSequence"
+    },
+    "render_instructions": {
+      "$ref": "#/$defs/RenderInstructions"
+    },
+    "render_delivery_notes": {
+      "$ref": "#/$defs/RenderDeliveryNotes"
+    }
+  },
+  "$defs": {
+    "ProjectMetadata": {
+      "type": "object",
+      "required": [
+        "project_id",
+        "title",
+        "content_type"
+      ],
+      "properties": {
+        "system_codename": {
+          "type": "string",
+          "default": "videoformation"
+        },
+        "project_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "description": "Unique project identifier (Alphanumeric, underscore, dash)"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "content_type": {
+          "$ref": "#/$defs/ContentType"
+        },
+        "created_date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "versioning": {
+          "type": "object",
+          "properties": {
+            "blueprint_version": {
+              "type": "string"
+            },
+            "schema_versioning": {
+              "type": "object",
+              "properties": {
+                "blueprint_schema": {
+                  "type": "string"
+                },
+                "otio_compatibility": {
+                  "type": "string"
+                },
+                "upgrade_path": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "project_version": {
+              "type": "string"
+            },
+            "change_log": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string"
+                  },
+                  "author": {
+                    "type": "string"
+                  },
+                  "summary": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "ContentType": {
+      "type": "string",
+      "enum": [
+        "shortfilm",
+        "musicvideo",
+        "documentary",
+        "ad",
+        "social",
+        "other"
+      ]
+    },
+    "GlobalSettings": {
+      "type": "object",
+      "required": [
+        "fps",
+        "resolution_master"
+      ],
+      "properties": {
+        "timebase": {
+          "type": "string",
+          "default": "timecode"
+        },
+        "fps": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "resolution_master": {
+          "type": "object",
+          "required": [
+            "width",
+            "height"
+          ],
+          "properties": {
+            "width": {
+              "type": "integer"
+            },
+            "height": {
+              "type": "integer"
+            }
+          }
+        },
+        "pixel_aspect_ratio": {
+          "type": "string",
+          "default": "1.0"
+        },
+        "color_pipeline": {
+          "type": "object",
+          "properties": {
+            "working_space": {
+              "type": "string"
+            },
+            "delivery_space_default": {
+              "type": "string"
+            },
+            "lut_default_ref": {
+              "type": "string"
+            }
+          }
+        },
+        "editorial_policy": {
+          "type": "object",
+          "properties": {
+            "default_handles_frames": {
+              "type": "integer"
+            },
+            "proxy_workflow": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "format": {
+                  "type": "string"
+                },
+                "suffix": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "hardware_constraints": {
+          "type": "object",
+          "properties": {
+            "max_poly_count_per_asset": {
+              "type": "integer"
+            },
+            "max_texture_resolution": {
+              "type": "integer"
+            },
+            "max_realtime_lights": {
+              "type": "integer"
+            },
+            "simulation_policy": {
+              "type": "string"
+            }
+          }
+        },
+        "audio_defaults": {
+          "type": "object",
+          "properties": {
+            "sample_rate_hz": {
+              "type": "integer"
+            },
+            "bit_depth": {
+              "type": "integer"
+            },
+            "mix_target": {
+              "type": "string"
+            },
+            "loudness_targets": {
+              "type": "object",
+              "properties": {
+                "integrated_lufs": {
+                  "type": "number"
+                },
+                "true_peak_dbtp": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "naming_conventions": {
+          "type": "object",
+          "properties": {
+            "sequence_id_format": {
+              "type": "string"
+            },
+            "scene_id_format": {
+              "type": "string"
+            },
+            "shot_id_format": {
+              "type": "string"
+            },
+            "full_shot_ref_format": {
+              "type": "string"
+            },
+            "filename_pattern": {
+              "type": "string"
+            },
+            "example": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "Localization": {
+      "type": "object",
+      "properties": {
+        "default_language": {
+          "type": "string"
+        },
+        "supported_languages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "text_style_refs": {
+          "type": "object",
+          "properties": {
+            "captions_style_ref": {
+              "type": "string"
+            },
+            "on_screen_text_style_ref": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "RightsAndCredits": {
+      "type": "object",
+      "properties": {
+        "copyright_notice": {
+          "type": "string"
+        },
+        "music_cue_sheet_hint": {
+          "type": "string"
+        },
+        "asset_rights_overrides": {
+          "type": "array"
+        }
+      }
+    },
+    "ProductionTracking": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "in_progress",
+            "review",
+            "approved",
+            "locked"
+          ]
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "low",
+            "normal",
+            "high"
+          ]
+        },
+        "review": {
+          "type": "object",
+          "properties": {
+            "reviewers": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "last_review_date": {
+              "type": "string"
+            },
+            "notes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "approvals": {
+          "type": "array"
+        }
+      }
+    },
+    "AssetManifest": {
+      "type": "object",
+      "properties": {
+        "environments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EnvironmentAsset"
+          }
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AssetEntry"
+          }
+        },
+        "characters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AssetEntry"
+          }
+        },
+        "props": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AssetEntry"
+          }
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ModelAsset"
+          }
+        },
+        "textures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TextureAsset"
+          }
+        },
+        "shaders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ShaderAsset"
+          }
+        },
+        "fonts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AssetEntry"
+          }
+        },
+        "text_styles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TextStyleAsset"
+          }
+        },
+        "luts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AssetEntry"
+          }
+        },
+        "audio": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AudioAsset"
+          }
+        },
+        "caption_files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CaptionFileAsset"
+          }
+        },
+        "graphics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/GraphicsAsset"
+          }
+        },
+        "vfx": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/VfxAsset"
+          }
+        }
+      }
+    },
+    "AssetEntry": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "properties": {
+          "type": "object"
+        },
+        "rights": {
+          "type": "object"
+        },
+        "sha256": {
+          "type": "string",
+          "description": "SHA256 checksum for media verification"
+        }
+      },
+      "additionalProperties": true
+    },
+    "DeliveryProfile": {
+      "type": "object",
+      "required": [
+        "id",
+        "resolution",
+        "fps"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "resolution": {
+          "$ref": "#/$defs/Resolution"
+        },
+        "fps": {
+          "type": "integer"
+        },
+        "container": {
+          "type": "string"
+        },
+        "video_codec": {
+          "type": "string"
+        },
+        "audio_codec": {
+          "type": "string"
+        },
+        "color_space": {
+          "type": "string"
+        },
+        "naming_template": {
+          "type": "string"
+        }
+      }
+    },
+    "ProductionSequence": {
+      "type": "object",
+      "required": [
+        "sequences"
+      ],
+      "properties": {
+        "sequences": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Sequence"
+          }
+        }
+      }
+    },
+    "Sequence": {
+      "type": "object",
+      "required": [
+        "sequence_id",
+        "scenes"
+      ],
+      "properties": {
+        "sequence_id": {
+          "type": "string",
+          "pattern": "^SEQ\\d+$"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "style_guide": {
+          "type": "object"
+        },
+        "scenes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Scene"
+          }
+        }
+      }
+    },
+    "Scene": {
+      "type": "object",
+      "required": [
+        "scene_id",
+        "shots"
+      ],
+      "properties": {
+        "scene_id": {
+          "type": "string",
+          "pattern": "^S\\d+$"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "location_ref": {
+          "type": "string"
+        },
+        "estimated_duration_seconds": {
+          "type": "number"
+        },
+        "confidence": {
+          "$ref": "#/$defs/Confidence"
+        },
+        "stage_setup": {
+          "type": "object"
+        },
+        "shots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Shot"
+          }
+        },
+        "captions": {
+          "type": "object",
+          "properties": {
+            "use_external_caption_file": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether to use external caption file(s)"
+            },
+            "caption_file_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "References to caption_files asset IDs"
+            },
+            "inline_captions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "number"
+                  },
+                  "end": {
+                    "type": "number"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "language": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "Inline caption definitions (alternative to external files)"
+            }
+          }
+        }
+      }
+    },
+    "Shot": {
+      "type": "object",
+      "required": [
+        "shot_id",
+        "duration_seconds"
+      ],
+      "properties": {
+        "shot_id": {
+          "type": "string",
+          "pattern": "^SEQ\\d+\\.S\\d+\\.SH\\d+$"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "duration_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "camera": {
+          "$ref": "#/$defs/Camera"
+        },
+        "edit": {
+          "type": "object"
+        },
+        "action_notes": {
+          "type": "string"
+        },
+        "markers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Marker"
+          }
+        },
+        "dialogue": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DialogueLine"
+          }
+        },
+        "on_screen_text": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OnScreenText"
+          }
+        },
+        "audio_timeline": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AudioEvent"
+          }
+        },
+        "animation_timeline": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AnimationEvent"
+          }
+        },
+        "vfx_timeline": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/VfxEvent"
+          }
+        },
+        "color_grading": {
+          "type": "object",
+          "properties": {
+            "lut_ref": {
+              "type": "string",
+              "description": "Reference to LUT asset ID"
+            },
+            "contrast": {
+              "type": "number",
+              "minimum": 0,
+              "default": 1
+            },
+            "saturation": {
+              "type": "number",
+              "minimum": 0,
+              "default": 1
+            },
+            "brightness": {
+              "type": "number",
+              "default": 0
+            },
+            "temperature": {
+              "type": "number",
+              "description": "Color temperature adjustment"
+            },
+            "exposure": {
+              "type": "number",
+              "description": "Exposure adjustment in stops"
+            }
+          }
+        },
+        "asset_dependencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of asset IDs this shot depends on for rendering"
+        }
+      }
+    },
+    "Camera": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "lens_mm": {
+          "type": "number"
+        },
+        "path": {
+          "type": "array"
+        },
+        "depth_of_field": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "focal_distance": {
+              "type": "number"
+            },
+            "aperture": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "Marker": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "marked_range": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "number"
+            },
+            "duration": {
+              "type": "number"
+            }
+          }
+        },
+        "color": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      }
+    },
+    "DialogueLine": {
+      "type": "object",
+      "required": [
+        "timestamp",
+        "text"
+      ],
+      "properties": {
+        "timestamp": {
+          "type": "number",
+          "minimum": 0
+        },
+        "speaker_ref": {
+          "type": "string",
+          "description": "Reference to character asset ID"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "vo",
+            "dialogue",
+            "off"
+          ],
+          "description": "Voiceover, on-screen dialogue, or off-screen"
+        },
+        "text": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string",
+          "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+          "description": "ISO 639-1 language code"
+        }
+      }
+    },
+    "OnScreenText": {
+      "type": "object",
+      "required": [
+        "start",
+        "end",
+        "text"
+      ],
+      "properties": {
+        "start": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Start time in seconds"
+        },
+        "end": {
+          "type": "number",
+          "minimum": 0,
+          "description": "End time in seconds"
+        },
+        "text": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string",
+          "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+          "description": "ISO 639-1 language code (e.g., 'en', 'ar', 'en-US')"
+        },
+        "style_ref": {
+          "type": "string",
+          "description": "Reference to text_styles asset ID"
+        },
+        "position_norm": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "Normalized position [x, y] where 0.0 = left/top, 1.0 = right/bottom"
+        },
+        "anchor": {
+          "type": "string",
+          "enum": [
+            "center",
+            "left",
+            "right",
+            "top",
+            "bottom",
+            "top-left",
+            "top-right",
+            "bottom-left",
+            "bottom-right"
+          ],
+          "default": "center",
+          "description": "Text anchor point"
+        }
+      }
+    },
+    "AudioEvent": {
+      "type": "object",
+      "required": [
+        "timestamp",
+        "asset_ref"
+      ],
+      "properties": {
+        "timestamp": {
+          "type": "number",
+          "minimum": 0
+        },
+        "event_type": {
+          "type": "string",
+          "enum": [
+            "audio_play",
+            "audio_stop",
+            "audio_pause",
+            "audio_resume"
+          ],
+          "default": "audio_play"
+        },
+        "asset_ref": {
+          "type": "string",
+          "description": "Reference to audio asset ID"
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "fade_in": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Fade in duration in seconds"
+            },
+            "fade_out": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Fade out duration in seconds"
+            },
+            "volume_db": {
+              "type": "number",
+              "description": "Volume in decibels"
+            },
+            "loop": {
+              "type": "boolean",
+              "default": false
+            },
+            "start_offset": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Start playback offset in seconds"
+            }
+          },
+          "additionalProperties": true
+        },
+        "master": {
+          "type": "object",
+          "description": "Master audio track settings (optional)"
+        }
+      }
+    },
+    "AnimationEvent": {
+      "type": "object",
+      "required": [
+        "timestamp",
+        "target_ref"
+      ],
+      "properties": {
+        "timestamp": {
+          "type": "number",
+          "minimum": 0,
+          "description": "When animation starts (seconds)"
+        },
+        "event_type": {
+          "type": "string",
+          "enum": [
+            "anim_play",
+            "anim_stop",
+            "anim_blend"
+          ],
+          "default": "anim_play"
+        },
+        "target_ref": {
+          "type": "string",
+          "description": "Reference to actor/prop instance_id or asset_ref"
+        },
+        "animation_ref": {
+          "type": "string",
+          "description": "Reference to animation clip/preset"
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "duration_seconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "loop": {
+              "type": "boolean",
+              "default": false
+            },
+            "blend_time": {
+              "type": "number",
+              "minimum": 0
+            },
+            "speed": {
+              "type": "number",
+              "minimum": 0,
+              "default": 1
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "VfxEvent": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Time in seconds when VFX starts"
+        },
+        "event_type": {
+          "type": "string",
+          "enum": [
+            "vfx_start",
+            "vfx_stop",
+            "vfx_trigger"
+          ],
+          "default": "vfx_start"
+        },
+        "asset_ref": {
+          "type": "string",
+          "description": "Reference to VFX asset ID"
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "intensity": {
+              "type": "number",
+              "minimum": 0,
+              "default": 1
+            },
+            "duration_frames": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "loop": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "RenderInstructions": {
+      "type": "object",
+      "properties": {
+        "preview": {
+          "type": "object",
+          "properties": {
+            "watermark": {
+              "type": "boolean",
+              "default": true
+            },
+            "burn_in": {
+              "type": "object",
+              "properties": {
+                "timecode": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "shot_id": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "safe_area": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "frame_number": {
+                  "type": "boolean",
+                  "default": false
+                }
+              }
+            }
+          }
+        },
+        "master": {
+          "type": "object",
+          "properties": {
+            "post_processing": {
+              "type": "object",
+              "properties": {
+                "bloom": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean",
+                      "default": false
+                    },
+                    "threshold": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "intensity": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  }
+                },
+                "grain": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean",
+                      "default": false
+                    },
+                    "amount": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  }
+                },
+                "vignette": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean",
+                      "default": false
+                    },
+                    "intensity": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  }
+                }
+              }
+            },
+            "outputs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "delivery_profile_ref"
+                ],
+                "properties": {
+                  "delivery_profile_ref": {
+                    "type": "string",
+                    "description": "Reference to delivery profile ID"
+                  },
+                  "include_captions": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "include_subtitles_burn_in": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "RenderDeliveryNotes": {
+      "type": "object",
+      "properties": {
+        "notes": {
+          "type": "string"
+        },
+        "confidence": {
+          "$ref": "#/$defs/Confidence"
+        }
+      }
+    },
+    "Confidence": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "estimated",
+        "confirmed"
+      ],
+      "description": "Confidence level for estimates or data"
+    },
+    "AssetRights": {
+      "type": "object",
+      "properties": {
+        "license": {
+          "type": "string",
+          "enum": [
+            "unknown",
+            "original",
+            "purchased",
+            "licensed",
+            "open",
+            "creative_commons",
+            "public_domain"
+          ]
+        },
+        "source_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "credit_required": {
+          "type": "boolean",
+          "default": false
+        },
+        "credit_text": {
+          "type": "string"
+        },
+        "attribution": {
+          "type": "string"
+        }
+      }
+    },
+    "ModelAsset": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AssetEntry"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "glb",
+                "fbx",
+                "vrm",
+                "usd",
+                "obj",
+                "blend"
+              ]
+            },
+            "lod_levels": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "high",
+                  "medium",
+                  "low",
+                  "ultra"
+                ]
+              }
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "properties": {
+              "type": "object",
+              "properties": {
+                "cast_shadows": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "receive_shadows": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "poly_count": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "additionalProperties": true
+            },
+            "rights": {
+              "$ref": "#/$defs/AssetRights"
+            }
+          }
+        }
+      ]
+    },
+    "AudioAsset": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AssetEntry"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "bgm",
+                "score",
+                "sfx",
+                "ambience",
+                "voiceover",
+                "dialogue"
+              ]
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "stereo",
+                "mono",
+                "ambisonic",
+                "5.1",
+                "7.1"
+              ]
+            },
+            "preload": {
+              "type": "boolean",
+              "default": false
+            },
+            "properties": {
+              "type": "object",
+              "properties": {
+                "default_volume_db": {
+                  "type": "number"
+                },
+                "loop": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "sample_rate": {
+                  "type": "integer"
+                },
+                "bit_depth": {
+                  "type": "integer"
+                }
+              },
+              "additionalProperties": true
+            },
+            "rights": {
+              "$ref": "#/$defs/AssetRights"
+            }
+          }
+        }
+      ]
+    },
+    "VfxAsset": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AssetEntry"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "particle",
+                "simulation",
+                "compositing",
+                "shader"
+              ]
+            },
+            "properties": {
+              "type": "object",
+              "properties": {
+                "intensity": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "duration_frames": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "loop": {
+                  "type": "boolean",
+                  "default": false
+                }
+              },
+              "additionalProperties": true
+            },
+            "rights": {
+              "$ref": "#/$defs/AssetRights"
+            }
+          }
+        }
+      ]
+    },
+    "TextureAsset": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AssetEntry"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "image",
+                "procedural",
+                "video"
+              ]
+            },
+            "channels": {
+              "type": "string",
+              "enum": [
+                "RGB",
+                "RGBA",
+                "R",
+                "RG",
+                "A"
+              ],
+              "default": "RGBA"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "scale": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 1
+                },
+                "speed": {
+                  "type": "number",
+                  "default": 0
+                },
+                "tiling": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              },
+              "additionalProperties": true
+            }
+          }
+        }
+      ]
+    },
+    "EnvironmentAsset": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AssetEntry"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "hdri",
+                "skybox",
+                "procedural",
+                "plate"
+              ]
+            },
+            "preload": {
+              "type": "boolean",
+              "default": false
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "properties": {
+              "type": "object",
+              "properties": {
+                "exposure": {
+                  "type": "number",
+                  "default": 0
+                },
+                "rotation_deg": {
+                  "type": "number",
+                  "default": 0
+                }
+              },
+              "additionalProperties": true
+            }
+          }
+        }
+      ]
+    },
+    "ShaderAsset": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AssetEntry"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "pbr",
+                "unlit",
+                "toon",
+                "custom"
+              ]
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "albedo_color": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "metallic": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "roughness": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "emission_strength": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "additionalProperties": true
+            }
+          }
+        }
+      ]
+    },
+    "TextStyleAsset": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AssetEntry"
+        },
+        {
+          "type": "object",
+          "required": [
+            "font_ref",
+            "size_px"
+          ],
+          "properties": {
+            "font_ref": {
+              "type": "string",
+              "description": "Reference to font asset ID"
+            },
+            "size_px": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "color": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$",
+              "default": "#FFFFFF"
+            },
+            "stroke_color": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "stroke_width_px": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "safe_margins": {
+              "type": "object",
+              "properties": {
+                "bottom_px": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "top_px": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "side_px": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "left_px": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "right_px": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "GraphicsAsset": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AssetEntry"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "image",
+                "svg",
+                "video",
+                "mogrt",
+                "vector"
+              ]
+            },
+            "rights": {
+              "$ref": "#/$defs/AssetRights"
+            }
+          }
+        }
+      ]
+    },
+    "CaptionFileAsset": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AssetEntry"
+        },
+        {
+          "type": "object",
+          "required": [
+            "language",
+            "format"
+          ],
+          "properties": {
+            "language": {
+              "type": "string",
+              "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "srt",
+                "vtt",
+                "scc",
+                "ass",
+                "ssa"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "Resolution": {
+      "type": "object",
+      "required": [
+        "width",
+        "height"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer"
+        },
+        "height": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}

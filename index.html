@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoFormation Schema Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e1e5e9;
+        }
+        .schema-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .schema-card {
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 20px;
+            transition: box-shadow 0.2s;
+        }
+        .schema-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .schema-card h3 {
+            margin-top: 0;
+            color: #2563eb;
+        }
+        .schema-url {
+            font-family: 'Monaco', 'Menlo', monospace;
+            background: #e1e5e9;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+        .usage-example {
+            background: #f1f5f9;
+            border-left: 4px solid #2563eb;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .usage-example pre {
+            margin: 0;
+            overflow-x: auto;
+        }
+        .nav-links {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .nav-links a {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 10px 20px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        .nav-links a:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>VideoFormation Schema</h1>
+        <p>JSON-driven video production pipeline specification</p>
+    </div>
+
+    <div class="schema-links">
+        <div class="schema-card">
+            <h3>📋 Latest Schema</h3>
+            <p>Most recent version for new projects:</p>
+            <div class="schema-url">https://videoformation.dev/schemas/blueprint/latest.json</div>
+        </div>
+        
+        <div class="schema-card">
+            <h3>🔒 Versioned Schema</h3>
+            <p>Current stable version (v1.1.0):</p>
+            <div class="schema-url">https://videoformation.dev/schemas/blueprint/v1.1.0.json</div>
+        </div>
+    </div>
+
+    <div class="usage-example">
+        <h3>🚀 Quick Usage</h3>
+        <p>Add to your blueprint.json:</p>
+        <pre><code>{
+  "$schema": "https://videoformation.dev/schemas/blueprint/latest.json",
+  "project_metadata": { ... },
+  "global_settings": { ... },
+  "production_sequence": { ... }
+}</code></pre>
+    </div>
+
+    <div class="nav-links">
+        <a href="docs/README.md">📚 Documentation</a>
+        <a href="examples/">💡 Examples</a>
+        <a href="docs/CHANGELOG.md">📝 Changelog</a>
+    </div>
+
+    <script>
+        // Auto-redirect latest.json to current version
+        if (window.location.pathname.endsWith('/latest.json')) {
+            window.location.href = '/schemas/blueprint/v1.1.0.json';
+        }
+    </script>
+</body>
+</html>

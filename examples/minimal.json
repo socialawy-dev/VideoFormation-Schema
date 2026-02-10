@@ -1,0 +1,34 @@
+{
+  "$schema": "../schemas/blueprint.schema.json",
+  "project_metadata": {
+    "system_codename": "videoformation",
+    "project_id": "MINIMAL_01",
+    "title": "Minimal Video",
+    "description": "A simple video project",
+    "content_type": "shortfilm",
+    "created_date": "2026-02-10",
+    "owner": "Your Name"
+  },
+  "global_settings": {
+    "fps": 30,
+    "resolution_master": { "width": 1920, "height": 1080 }
+  },
+  "production_sequence": {
+    "sequences": [
+      {
+        "sequence_id": "SEQ01",
+        "scenes": [
+          {
+            "scene_id": "S01",
+            "shots": [
+              {
+                "shot_id": "SEQ01.S01.SH01",
+                "duration_seconds": 5.0
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
