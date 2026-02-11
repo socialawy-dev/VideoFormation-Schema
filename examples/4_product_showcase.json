@@ -1,0 +1,76 @@
+{
+  "$schema": "../blueprint.schema.json",
+  "project_metadata": {
+    "project_id": "PROD_004",
+    "title": "Smart Watch Reveal",
+    "description": "Example 4: Product showcase. Focuses on asset layering, smooth camera movement, and high-fidelity lighting.",
+    "content_type": "commercial"
+  },
+  "global_settings": {
+    "fps": 60,
+    "resolution_master": { "width": 1080, "height": 1080 },
+    "color_pipeline": { "working_space": "ACEScg" }
+  },
+  "asset_manifest": {
+    "models": [
+      {
+        "id": "PROD_WATCH",
+        "type": "glb",
+        "source": "assets/watch_v2.glb",
+        "properties": { "cast_shadows": true }
+      },
+      { "id": "PROP_PEDESTAL", "type": "fbx", "source": "assets/pedestal.fbx" }
+    ],
+    "environments": [
+      { "id": "ENV_STUDIO", "type": "hdri", "source": "studio_dark.exr" }
+    ]
+  },
+  "production_sequence": {
+    "sequences": [
+      {
+        "sequence_id": "SEQ01",
+        "scenes": [
+          {
+            "scene_id": "S01",
+            "stage_setup": {
+              "environment_ref": "ENV_STUDIO",
+              "props": [
+                { "asset_ref": "PROP_PEDESTAL", "instance_id": "PED_01", "initial_state": { "position": [0, -1, 0] } },
+                { "asset_ref": "PROD_WATCH", "instance_id": "WATCH_01", "initial_state": { "position": [0, 0, 0], "rotation_deg": [0, 0, 15] } }
+              ],
+              "lights": [
+                { "id": "KEY", "type": "spot", "position": [5, 5, 5], "target": [0, 0, 0], "intensity": 10.0, "color": "#FFFFFF" },
+                { "id": "RIM", "type": "point", "position": [-3, 2, -3], "intensity": 5.0, "color": "#00CCFF" }
+              ]
+            },
+            "shots": [
+              {
+                "shot_id": "SH01",
+                "slug": "Orbit Reveal",
+                "duration_seconds": 6.0,
+                "camera": {
+                  "id": "CAM_ORBIT",
+                  "lens_mm": 50,
+                  "depth_of_field": { "enabled": true, "focal_distance": 5.0, "aperture": 2.8 },
+                  "path": [
+                    { "time": 0.0, "position": [5, 2, 0], "target": [0, 0, 0], "easing": "easeInOutQuad" },
+                    { "time": 3.0, "position": [0, 2, 5], "target": [0, 0, 0], "easing": "easeInOutQuad" },
+                    { "time": 6.0, "position": [-5, 2, 0], "target": [0, 0, 0] }
+                  ]
+                },
+                "animation_timeline": [
+                  {
+                    "timestamp": 0.0,
+                    "event_type": "anim_play",
+                    "target_ref": "WATCH_01",
+                    "animation_ref": "screen_on_anim"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

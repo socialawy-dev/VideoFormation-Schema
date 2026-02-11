@@ -1,446 +1,347 @@
 {
-  "$schema": "../schemas/blueprint.schema.json",
+  "$schema": "../blueprint.schema.json",
   "project_metadata": {
     "system_codename": "videoformation",
-    "project_id": "FULL_EXAMPLE_01",
-    "title": "Full Example Video",
-    "description": "A comprehensive video project showcasing all blueprint features.",
+    "project_id": "NEON_HORIZON_001",
+    "title": "Neon Horizon: Chase Sequence",
+    "description": "A technical demonstration of the V1.1 Blueprint Schema for a high-end CGI short film.",
     "content_type": "shortfilm",
-    "created_date": "2026-02-10",
-    "owner": "VideoFormation Team",
+    "created_date": "2026-03-15",
+    "owner": "Creative Studio X",
     "versioning": {
-      "blueprint_version": "1.1",
-      "schema_versioning": {
-        "blueprint_schema": "1.1",
-        "otio_compatibility": "0.15.0",
-        "upgrade_path": ["1.0→1.1"]
-      },
-      "project_version": "1.0.0",
+      "blueprint_version": "1.1.0",
+      "project_version": "0.8.0-beta",
       "change_log": [
         {
-          "date": "2026-02-10",
-          "author": "VideoFormation Team",
-          "summary": "Complete example blueprint with all features"
+          "date": "2026-03-10",
+          "author": "Lead TD",
+          "summary": "Locked animatic timing and updated asset references."
         }
       ]
     }
   },
   "global_settings": {
     "timebase": "timecode",
-    "fps": 30,
-    "resolution_master": { "width": 1920, "height": 1080 },
+    "fps": 24,
+    "resolution_master": {
+      "width": 3840,
+      "height": 2160
+    },
     "pixel_aspect_ratio": "1.0",
     "color_pipeline": {
       "working_space": "ACEScg",
-      "delivery_space_default": "Rec709",
-      "lut_default_ref": "LUT_REC709"
+      "delivery_space_default": "Rec.709",
+      "lut_default_ref": "LUT_FILM_LOOK"
     },
     "editorial_policy": {
-      "default_handles_frames": 12,
+      "default_handles_frames": 24,
+      "handles_unit": "frames",
       "proxy_workflow": {
         "enabled": true,
-        "format": "h264_low_bitrate",
+        "format": "ProRes422Proxy",
         "suffix": "_proxy"
       }
     },
     "hardware_constraints": {
-      "max_poly_count_per_asset": 50000,
+      "max_poly_count_per_asset": 500000,
       "max_texture_resolution": 4096,
-      "max_realtime_lights": 4,
-      "simulation_policy": "baked_only"
+      "simulation_policy": "cache_always"
     },
     "audio_defaults": {
       "sample_rate_hz": 48000,
       "bit_depth": 24,
-      "mix_target": "stereo",
+      "mix_target": "5.1",
       "loudness_targets": {
-        "integrated_lufs": -14,
+        "integrated_lufs": -24.0,
         "true_peak_dbtp": -1.0
       }
     },
     "naming_conventions": {
-      "sequence_id_format": "SEQ{##}",
-      "scene_id_format": "S{##}",
-      "shot_id_format": "SH{##}",
-      "full_shot_ref_format": "{SEQ##}.{S##}.{SH##}",
-      "filename_pattern": "{PROJECT}_{SEQ##}_{S##}_{SH##}_{TYPE}_{desc}_v{###}.{ext}",
-      "example": "FULL_SEQ01_S01_SH01_VFX_shimmer-element_v001.png"
+      "sequence_id_format": "SEQ[0-9]+",
+      "shot_id_format": "SEQ[0-9]+.S[0-9]+.SH[0-9]+",
+      "example": "SEQ010.S001.SH010"
     }
   },
   "localization": {
-    "default_language": "en",
-    "supported_languages": ["en", "ar"],
+    "default_language": "en-US",
+    "supported_languages": [
+      "en-US",
+      "es-ES",
+      "ja-JP"
+    ],
     "text_style_refs": {
-      "captions_style_ref": "TXT_CAPTIONS_DEFAULT",
-      "on_screen_text_style_ref": "TXT_OST_DEFAULT"
+      "captions_style_ref": "STYLE_CAPTION",
+      "on_screen_text_style_ref": "STYLE_HUD"
     }
   },
-  "rights_and_credits": {
-    "copyright_notice": "© 2026 VideoFormation. All rights reserved.",
-    "music_cue_sheet_hint": "Maintain cue sheet from audio assets used in sequence.",
-    "asset_rights_overrides": []
-  },
   "production_tracking_light": {
-    "status": "draft",
-    "priority": "normal",
-    "review": {
-      "reviewers": ["Director", "Producer"],
-      "last_review_date": "2026-02-10",
-      "notes": ["Initial review complete"]
-    },
+    "status": "in_progress",
+    "priority": "high",
     "approvals": [
       {
         "role": "Director",
-        "name": "John Doe",
+        "name": "J. Cameron",
         "approved": true,
-        "date": "2026-02-10"
+        "date": "2026-03-12"
       }
     ]
   },
   "asset_manifest": {
     "environments": [
       {
-        "id": "ENV_CITY_DAWN",
+        "id": "ENV_CYBER_DISTRICT",
         "type": "hdri",
-        "source": "path/to/city_dawn.exr",
+        "source": "assets/environments/cyber_district_night_8k.hdr",
         "preload": true,
-        "tags": ["exterior", "dawn"],
-        "properties": { "exposure": 0.0, "rotation_deg": 0 }
-      }
-    ],
-    "locations": [
-      {
-        "id": "LOC_APARTMENT_01",
-        "display_name": "Apartment - Living Room",
-        "environment_ref": "ENV_CITY_DAWN",
-        "notes": "Modern apartment with city view."
-      }
-    ],
-    "characters": [
-      {
-        "id": "CHAR_HERO_01",
-        "display_name": "Hero",
-        "model_ref": "MDL_HERO_01",
-        "voice_ref": "AUD_VO_HERO_01",
-        "wardrobe_refs": ["MDL_WARDROBE_HERO_01"],
-        "expressions": ["neutral", "smile", "angry"]
-      }
-    ],
-    "props": [
-      {
-        "id": "MDL_PHONE_01",
-        "type": "model",
-        "tags": ["handheld", "prop"]
+        "properties": {
+          "exposure": 0.5,
+          "rotation_deg": 180
+        }
       }
     ],
     "models": [
       {
-        "id": "MDL_HERO_01",
+        "id": "MOD_HERO_VEHICLE",
         "type": "glb",
-        "source": "path/to/hero.glb",
-        "lod_levels": ["high", "medium", "low"],
-        "properties": { "cast_shadows": true, "receive_shadows": true },
-        "rights": {
-          "license": "original",
-          "source_url": null,
-          "credit_required": false
+        "source": "assets/models/vehicles/interceptor_mk5.glb",
+        "lod_levels": [
+          "high",
+          "medium",
+          "low"
+        ],
+        "properties": {
+          "poly_count": 150000,
+          "cast_shadows": true
         },
-        "sha256": "b2c3d4e5f6789012345678901234567890123456789012345678901234567890123",
-        "tags": ["character"]
-      }
-    ],
-    "textures": [
-      {
-        "id": "TEX_HERO_SKIN_01",
-        "type": "image",
-        "source": "path/to/skin.png",
-        "channels": "RGBA",
-        "params": { "scale": 1.0, "speed": 0.0 }
-      }
-    ],
-    "shaders": [
-      {
-        "id": "SHD_PBR_DEFAULT",
-        "type": "pbr",
-        "source": "path/to/pbr.mat",
-        "parameters": { "albedo_color": "#FFFFFF", "metallic": 0.0, "emission_strength": 0.0 }
-      }
-    ],
-    "fonts": [
-      {
-        "id": "FNT_PRIMARY",
-        "source": "path/to/font.ttf",
-        "rights": { "license": "licensed", "credit_required": false }
-      }
-    ],
-    "text_styles": [
-      {
-        "id": "TXT_CAPTIONS_DEFAULT",
-        "font_ref": "FNT_PRIMARY",
-        "size_px": 44,
-        "color": "#FFFFFF",
-        "stroke_color": "#000000",
-        "stroke_width_px": 4,
-        "safe_margins": { "bottom_px": 80, "side_px": 120 }
+        "sha256": "a1b2c3d4e5f6..."
       },
       {
-        "id": "TXT_OST_DEFAULT",
-        "font_ref": "FNT_PRIMARY",
-        "size_px": 64,
-        "color": "#FFFFFF",
-        "stroke_color": "#000000",
-        "stroke_width_px": 0,
-        "safe_margins": { "bottom_px": 120, "side_px": 120 }
+        "id": "MOD_DRONE_SENTRY",
+        "type": "fbx",
+        "source": "assets/models/robots/drone_sentry.fbx"
       }
     ],
-    "luts": [
+    "characters": [
       {
-        "id": "LUT_REC709",
-        "source": "path/to/rec709.cube",
-        "notes": "Default delivery LUT."
+        "id": "CHAR_KIRA",
+        "type": "metahuman",
+        "source": "assets/characters/kira_v3.uasset",
+        "display_name": "Kira (Protagonist)",
+        "model_ref": "MOD_KIRA_MESH",
+        "wardrobe_refs": ["MOD_KIRA_SUIT_V2"]
       }
     ],
     "audio": [
       {
-        "id": "AUD_MUSIC_01",
+        "id": "AUD_BGM_CHASE",
         "type": "bgm",
-        "source": "path/to/music.wav",
-        "format": "stereo",
-        "preload": true,
-        "properties": { "default_volume_db": -12.0, "loop": false },
-        "rights": {
-          "license": "licensed",
-          "credit_required": true,
-          "credit_text": "Music: Composer / Label"
+        "source": "assets/audio/music/high_octane_chase.wav",
+        "format": "5.1",
+        "properties": {
+          "default_volume_db": -6.0,
+          "loop": true
         }
       },
       {
-        "id": "AUD_VO_HERO_01",
-        "type": "voiceover",
-        "source": "path/to/hero_vo.wav",
-        "format": "mono",
-        "preload": false,
-        "properties": { "default_volume_db": -6.0, "loop": false }
+        "id": "AUD_SFX_LASER",
+        "type": "sfx",
+        "source": "assets/audio/sfx/weapons/laser_blast_01.wav",
+        "format": "mono"
       }
     ],
-    "caption_files": [
+    "vfx": [
       {
-        "id": "CAP_EN_MAIN",
-        "language": "en",
-        "format": "srt",
-        "source": "path/to/captions_en.srt"
+        "id": "VFX_SPARKS",
+        "type": "particle",
+        "source": "assets/vfx/niagara/sparks_collision.ns",
+        "properties": {
+          "duration_frames": 60,
+          "intensity": 2.0
+        }
+      }
+    ],
+    "fonts": [
+      {
+        "id": "FONT_HUD",
+        "type": "otf",
+        "source": "assets/fonts/SciFi_HUD.otf"
+      }
+    ],
+    "text_styles": [
+      {
+        "id": "STYLE_CAPTION",
+        "type": "standard",
+        "font_ref": "FONT_HUD",
+        "size_px": 32,
+        "color": "#FFFFFF",
+        "stroke_color": "#000000",
+        "stroke_width_px": 2
       },
       {
-        "id": "CAP_AR_MAIN",
-        "language": "ar",
-        "format": "srt",
-        "source": "path/to/captions_ar.srt"
+        "id": "STYLE_HUD",
+        "type": "ui",
+        "font_ref": "FONT_HUD",
+        "size_px": 48,
+        "color": "#00FFFF",
+        "safe_margins": {
+          "bottom_px": 100
+        }
       }
     ],
-    "graphics": [
+    "luts": [
       {
-        "id": "GFX_LOGO_01",
-        "type": "image",
-        "source": "path/to/logo.png",
-        "rights": { "license": "original", "credit_required": false }
+        "id": "LUT_FILM_LOOK",
+        "type": "cube",
+        "source": "assets/luts/neon_noir_gen4.cube"
       }
     ]
   },
-  "delivery_profiles": [
-    {
-      "id": "DEL_MASTER_16x9",
-      "purpose": "master",
-      "resolution": { "width": 1920, "height": 1080 },
-      "fps": 30,
-      "container": "mov",
-      "video_codec": "prores",
-      "audio_codec": "pcm",
-      "color_space": "Rec709",
-      "naming_template": "{project_id}_{version}_{profile_id}"
-    },
-    {
-      "id": "DEL_SOCIAL_9x16",
-      "purpose": "social",
-      "resolution": { "width": 1080, "height": 1920 },
-      "fps": 30,
-      "container": "mp4",
-      "video_codec": "h264",
-      "audio_codec": "aac",
-      "color_space": "Rec709",
-      "naming_template": "{project_id}_{version}_{profile_id}"
-    },
-    {
-      "id": "DEL_SOCIAL_1x1",
-      "purpose": "social",
-      "resolution": { "width": 1080, "height": 1080 },
-      "fps": 30,
-      "container": "mp4",
-      "video_codec": "h264",
-      "audio_codec": "aac",
-      "color_space": "Rec709",
-      "naming_template": "{project_id}_{version}_{profile_id}"
-    }
-  ],
   "production_sequence": {
     "sequences": [
       {
-        "sequence_id": "SEQ01",
-        "slug": "OPENING",
-        "description": "Opening sequence.",
+        "sequence_id": "SEQ010",
+        "slug": "THE_ESCAPE",
+        "description": "Kira escapes the district in her interceptor.",
         "style_guide": {
-          "palette_hex": ["#1A1A1D", "#6F2232", "#950740"],
+          "palette_hex": [
+            "#050510",
+            "#FF0055",
+            "#00FFFF"
+          ],
           "contrast_level": "high",
-          "film_grain_intensity": 0.2
+          "film_grain_intensity": 0.15
         },
         "scenes": [
           {
-            "scene_id": "S01",
-            "slug": "DAWN_INTRO",
-            "location_ref": "LOC_APARTMENT_01",
-            "estimated_duration_seconds": 12.0,
-            "confidence": "estimated",
+            "scene_id": "S010",
+            "slug": "EXT. HIGHWAY - NIGHT",
+            "estimated_duration_seconds": 15.0,
+            "confidence": "high",
             "stage_setup": {
-              "environment_ref": "ENV_CITY_DAWN",
+              "environment_ref": "ENV_CYBER_DISTRICT",
               "actors": [
                 {
-                  "asset_ref": "MDL_HERO_01",
-                  "instance_id": "INS_HERO_A",
+                  "asset_ref": "CHAR_KIRA",
+                  "instance_id": "KIRA_01",
                   "initial_state": {
-                    "position": [0, 0, 0],
-                    "rotation_deg": [0, 0, 0],
-                    "scale": [1, 1, 1]
-                  },
-                  "material_overrides": [
-                    { "slot": 0, "shader_ref": "SHD_PBR_DEFAULT" }
-                  ]
+                    "position": [0, 0, 0]
+                  }
                 }
               ],
               "props": [
                 {
-                  "asset_ref": "MDL_PHONE_01",
-                  "instance_id": "INS_PHONE_A",
+                  "asset_ref": "MOD_HERO_VEHICLE",
+                  "instance_id": "CAR_01",
                   "initial_state": {
-                    "position": [0.3, 0.9, 0.2],
-                    "rotation_deg": [0, 20, 0],
-                    "scale": [1, 1, 1]
+                    "position": [0, 0, 0]
                   }
                 }
               ],
               "lights": [
                 {
-                  "id": "LGT_KEY_01",
+                  "id": "LGT_KEY",
                   "type": "directional",
-                  "color": "#FFEECC",
-                  "intensity": 1.5,
-                  "position": [5, 10, 5],
-                  "rotation_deg": [-30, 45, 0],
-                  "cast_shadows": true
+                  "color": "#A0A0FF",
+                  "intensity": 2.5,
+                  "position": [10, 20, 10],
+                  "rotation_deg": [45, 30, 0]
                 }
               ]
             },
             "shots": [
               {
-                "shot_id": "SEQ01.S01.SH01",
-                "slug": "WIDE_ESTABLISH",
-                "duration_seconds": 4.0,
+                "shot_id": "SEQ010.S010.SH010",
+                "slug": "ESTABLISHING SHOT",
+                "duration_seconds": 4.5,
+                "action_notes": "Camera sweeps down to follow the interceptor speeding through traffic.",
                 "camera": {
-                  "id": "CAM_SEQ01.S01.SH01",
-                  "type": "perspective",
-                  "lens_mm": 35,
+                  "id": "CAM_MAIN",
+                  "type": "virtual",
+                  "lens_mm": 24,
+                  "depth_of_field": {
+                    "enabled": true,
+                    "focal_distance": 15.0,
+                    "aperture": 5.6
+                  },
                   "path": [
                     {
                       "time": 0.0,
-                      "position": [0, 2, 10],
-                      "target": [0, 1, 0],
-                      "easing": "easeInOutCubic"
+                      "position": [0, 50, -100],
+                      "target": [0, 0, 0]
+                    },
+                    {
+                      "time": 4.5,
+                      "position": [0, 10, -20],
+                      "target": [0, 0, 50],
+                      "easing": "easeOutCubic"
                     }
-                  ],
-                  "depth_of_field": { "enabled": false, "focal_distance": 5.0, "aperture": 2.8 }
+                  ]
                 },
-                "edit": {
-                  "transition_in": "cut",
-                  "transition_out": "cut"
-                },
-                "action_notes": "Hero sits silently, city light spills in.",
                 "markers": [
-                   {
-                     "name": "Note", 
-                     "marked_range": { "start": 0, "duration": 0 }, 
-                     "color": "GREEN", 
-                     "comment": "New shot marker"
-                   }
+                  {
+                    "name": "Impact",
+                    "marked_range": {
+                      "start": 3.5,
+                      "duration": 0.1
+                    },
+                    "color": "red",
+                    "comment": "Sync with music hit"
+                  }
                 ],
-                "dialogue": [],
+                "dialogue": [
+                  {
+                    "timestamp": 1.5,
+                    "speaker_ref": "CHAR_KIRA",
+                    "mode": "vo",
+                    "text": "They found me.",
+                    "language": "en-US"
+                  }
+                ],
                 "on_screen_text": [
                   {
                     "start": 0.5,
-                    "end": 2.5,
-                    "text": "FULL EXAMPLE VIDEO",
-                    "language": "en",
-                    "style_ref": "TXT_OST_DEFAULT",
-                    "position_norm": [0.5, 0.15],
-                    "anchor": "center"
+                    "end": 4.0,
+                    "text": "SECTOR 7: RESTRICTED",
+                    "style_ref": "STYLE_HUD",
+                    "position_norm": [0.1, 0.9],
+                    "anchor": "bottom-left"
                   }
                 ],
                 "audio_timeline": [
                   {
                     "timestamp": 0.0,
-                    "event_type": "audio_play",
-                    "asset_ref": "AUD_MUSIC_01",
-                    "params": { "fade_in": 1.0, "volume_db": -12.0 }
-                  }
-                ],
-                "animation_timeline": [],
-                "vfx_timeline": [],
-                "asset_dependencies": ["MDL_HERO_01", "ENV_CITY_DAWN"],
-                "color_grading": { "lut_ref": "LUT_REC709", "contrast": 1.0, "saturation": 1.0 }
-              },
-              {
-                "shot_id": "SEQ01.S01.SH02",
-                "slug": "MEDIUM_REACTION",
-                "duration_seconds": 8.0,
-                "camera": {
-                  "id": "CAM_SEQ01.S01.SH02",
-                  "type": "perspective",
-                  "lens_mm": 50,
-                  "path": [
-                    {
-                      "time": 0.0,
-                      "position": [1.2, 1.6, 3.0],
-                      "target": [0.2, 1.4, 0.0],
-                      "easing": "linear"
+                    "event_type": "music_start",
+                    "asset_ref": "AUD_BGM_CHASE",
+                    "params": {
+                      "fade_in": 0.0,
+                      "volume_db": -3.0
                     }
-                  ],
-                  "depth_of_field": { "enabled": true, "focal_distance": 2.5, "aperture": 2.0 }
+                  }
+                ],
+                "vfx_timeline": [
+                  {
+                    "timestamp": 3.5,
+                    "event_type": "particle_shimmer",
+                    "asset_ref": "VFX_SPARKS",
+                    "params": {
+                      "intensity": 5.0,
+                      "duration_frames": 12,
+                      "position": [2, 0, 5]
+                    }
+                  }
+                ],
+                "color_grading": {
+                  "lut_ref": "LUT_FILM_LOOK",
+                  "contrast": 1.2,
+                  "saturation": 1.1,
+                  "temperature": -500
                 },
-                "edit": { "transition_in": "cut", "transition_out": "cut" },
-                "action_notes": "Hero looks at the phone; a decision forms.",
-                "dialogue": [
-                  {
-                    "timestamp": 1.0,
-                    "speaker_ref": "CHAR_HERO_01",
-                    "mode": "vo",
-                    "text": "It starts today.",
-                    "language": "en"
-                  }
-                ],
-                "audio_timeline": [
-                  {
-                    "timestamp": 1.0,
-                    "event_type": "audio_play",
-                    "asset_ref": "AUD_VO_HERO_01",
-                    "params": { "fade_in": 0.1, "volume_db": -6.0 }
-                  }
-                ],
-                "graphics_timeline": [],
-                "animation_timeline": [],
-                "vfx_timeline": []
+                "asset_dependencies": [
+                  "MOD_HERO_VEHICLE",
+                  "ENV_CYBER_DISTRICT"
+                ]
               }
-            ],
-            "captions": {
-              "use_external_caption_file": true,
-              "caption_file_refs": ["CAP_EN_MAIN", "CAP_AR_MAIN"]
-            }
+            ]
           }
         ]
       }
@@ -449,20 +350,69 @@
   "render_instructions": {
     "preview": {
       "watermark": true,
-      "burn_in": { "timecode": true, "shot_id": true, "safe_area": true }
+      "burn_in": {
+        "timecode": true,
+        "shot_id": true,
+        "frame_number": true,
+        "safe_area": true
+      }
     },
     "master": {
       "post_processing": {
-        "bloom": { "enabled": false, "threshold": 0.8, "intensity": 1.2 },
-        "grain": { "enabled": false, "amount": 0.1 }
+        "bloom": {
+          "enabled": true,
+          "threshold": 0.9,
+          "intensity": 0.6
+        },
+        "grain": {
+          "enabled": true,
+          "amount": 0.12
+        },
+        "vignette": {
+          "enabled": true,
+          "intensity": 0.4
+        }
       },
       "outputs": [
         {
-          "delivery_profile_ref": "DEL_MASTER_16x9",
-          "include_captions": false,
-          "include_subtitles_burn_in": false
+          "delivery_profile_ref": "DEL_STREAMING_4K",
+          "include_captions": false
+        },
+        {
+          "delivery_profile_ref": "DEL_ARCHIVE_PRORES",
+          "include_captions": true
         }
       ]
     }
-  }
+  },
+  "delivery_profiles": [
+    {
+      "id": "DEL_STREAMING_4K",
+      "purpose": "YouTube/Vimeo",
+      "resolution": {
+        "width": 3840,
+        "height": 2160
+      },
+      "fps": 24,
+      "container": "mp4",
+      "video_codec": "h264",
+      "audio_codec": "aac",
+      "color_space": "Rec.709",
+      "naming_template": "{project}_WEB_v{version}"
+    },
+    {
+      "id": "DEL_ARCHIVE_PRORES",
+      "purpose": "Master Archive",
+      "resolution": {
+        "width": 3840,
+        "height": 2160
+      },
+      "fps": 24,
+      "container": "mov",
+      "video_codec": "ProRes4444",
+      "audio_codec": "pcm_s24le",
+      "color_space": "ACEScg",
+      "naming_template": "{project}_MASTER_v{version}"
+    }
+  ]
 }

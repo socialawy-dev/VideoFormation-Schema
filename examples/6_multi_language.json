@@ -1,0 +1,81 @@
+{
+  "$schema": "../blueprint.schema.json",
+  "project_metadata": {
+    "project_id": "LOC_006",
+    "title": "Global Campaign",
+    "description": "Example 6: Multi-language version. Demonstrates how localization is handled via the localization object and dialogue language tags.",
+    "content_type": "ad"
+  },
+  "global_settings": {
+    "fps": 25,
+    "resolution_master": { "width": 1080, "height": 1350 }
+  },
+  "localization": {
+    "default_language": "en-US",
+    "supported_languages": ["en-US", "es-ES", "fr-FR"],
+    "text_style_refs": {
+      "captions_style_ref": "STYLE_SUB"
+    }
+  },
+  "asset_manifest": {
+    "characters": [
+      { "id": "SPOKESPERSON", "type": "video", "display_name": "Anna" }
+    ],
+    "caption_files": [
+      { "id": "CAP_EN", "language": "en-US", "format": "srt", "source": "subs/en.srt" },
+      { "id": "CAP_ES", "language": "es-ES", "format": "srt", "source": "subs/es.srt" },
+      { "id": "CAP_FR", "language": "fr-FR", "format": "srt", "source": "subs/fr.srt" }
+    ],
+    "text_styles": [
+      { "id": "STYLE_SUB", "type": "standard", "font_ref": "FONT_MAIN", "size_px": 40 }
+    ],
+    "fonts": [
+      { "id": "FONT_MAIN", "source": "assets/fonts/Helvetica.ttf" }
+    ]
+  },
+  "production_sequence": {
+    "sequences": [
+      {
+        "sequence_id": "SEQ01",
+        "scenes": [
+          {
+            "scene_id": "S01",
+            "captions": {
+              "use_external_caption_file": true,
+              "caption_file_refs": ["CAP_EN", "CAP_ES", "CAP_FR"]
+            },
+            "shots": [
+              {
+                "shot_id": "SH01",
+                "duration_seconds": 10.0,
+                "dialogue": [
+                  {
+                    "timestamp": 0.0,
+                    "speaker_ref": "SPOKESPERSON",
+                    "mode": "dialogue",
+                    "text": "Hello world.",
+                    "language": "en-US"
+                  },
+                  {
+                    "timestamp": 0.0,
+                    "speaker_ref": "SPOKESPERSON",
+                    "mode": "dialogue",
+                    "text": "Hola mundo.",
+                    "language": "es-ES"
+                  },
+                  {
+                    "timestamp": 0.0,
+                    "speaker_ref": "SPOKESPERSON",
+                    "mode": "dialogue",
+                    "text": "Bonjour le monde.",
+                    "language": "fr-FR"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

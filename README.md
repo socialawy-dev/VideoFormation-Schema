@@ -1,60 +1,33 @@
-# @videoformation/blueprint-schema
+# VideoFormation Schema
 
-JSON Schema and validation utilities for VideoFormation blueprint files.
+JSON Schema for video production pipeline specifications.
 
-## 🚀 Installation
+## Quick Start
 
-```bash
-npm install @videoformation/blueprint-schema
-```
+Reference the schema in your `blueprint.json`:
 
-## 📋 Usage
-
-### JavaScript/TypeScript
-```javascript
-import { validateBlueprint } from '@videoformation/blueprint-schema';
-
-const blueprint = {
-  "project_metadata": {
-    "project_id": "MY_PROJECT",
-    "title": "My Video"
-  },
-  // ... rest of blueprint
-};
-
-const result = validateBlueprint(blueprint);
-if (result.valid) {
-  console.log('✅ Blueprint is valid');
-} else {
-  console.log('❌ Validation errors:', result.errors);
+```json
+{
+  "$schema": "https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json",
+  "project_metadata": { ... },
+  "global_settings": { ... },
+  "production_sequence": { ... }
 }
 ```
 
-### CLI
-```bash
-# Validate a blueprint file
-npx @videoformation/blueprint-schema validate my-blueprint.json
+## Links
 
-# Generate validation report
-npx @videoformation/blueprint-schema validate my-blueprint.json --report validation-report.json
-```
+- [Live Documentation](https://socialawy.github.io/VideoFormation-Schema/) — Schema reference & examples
+- [Changelog](https://socialawy.github.io/VideoFormation-Schema/CHANGELOG.md) — Version history
+- [Examples](https://socialawy.github.io/VideoFormation-Schema/examples/) — Sample blueprints
 
-## 📖 Documentation
+## Schema URLs
 
-- **Complete Schema Reference**
-- **Examples**: Minimal and complete blueprint examples
-- **API Reference**: Detailed validation options and error handling
+| Version | URL |
+|---------|-----|
+| Latest  | [https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json](https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json) |
+| v1.1.0  | [https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/v1.1.0.json](https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/v1.1.0.json) |
 
-## 🔗 Links
+## License
 
-- **npm Package**: https://www.npmjs.com/package/@videoformation/blueprint-schema
-- **GitHub Repository**: https://github.com/videoformation/blueprint-schema
-- **Issues**: https://github.com/videoformation/blueprint-schema/issues
-
-## 📄 License
-
-MIT License - see [LICENSE](./LICENSE) file for details.
-
----
-
-**Maintained by**: VideoFormation Team
+[Apache 2.0](LICENSE) — See LICENSE

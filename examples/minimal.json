@@ -1,17 +1,16 @@
 {
-  "$schema": "../schemas/blueprint.schema.json",
+  "$schema": "../blueprint.schema.json",
   "project_metadata": {
-    "system_codename": "videoformation",
-    "project_id": "MINIMAL_01",
-    "title": "Minimal Video",
-    "description": "A simple video project",
-    "content_type": "shortfilm",
-    "created_date": "2026-02-10",
-    "owner": "Your Name"
+    "project_id": "MIN_001",
+    "title": "Minimal Video Project",
+    "content_type": "social"
   },
   "global_settings": {
     "fps": 30,
-    "resolution_master": { "width": 1920, "height": 1080 }
+    "resolution_master": {
+      "width": 1080,
+      "height": 1920
+    }
   },
   "production_sequence": {
     "sequences": [

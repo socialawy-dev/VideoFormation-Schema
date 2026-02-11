@@ -1,96 +1,35 @@
 # VideoFormation Blueprint Schema v1.1
 
-A JSON Schema for validating video production pipeline specifications in the VideoFormation system.
+A JSON Schema for validating video production pipeline specifications.
 
-## Quick Start
+## Overview
 
-```bash
-# Validate your blueprint
-npx ajv validate -s blueprint.schema.json -d your-project/blueprint.json
+The VideoFormation Blueprint Schema provides a standard way to describe video productions: which assets to use, in what order, with what timing, transitions, text overlays, camera moves, and more.
 
-# Or use our local validation scripts
-node validate.cjs ../../PROJECTS/YOUR_PROJECT
-node test-all-projects.cjs  # Test all projects
-```
+**Key benefits:**
+- **Type Safety** — All asset types have proper enum constraints
+- **Structure Validation** — Required fields and proper nesting
+- **Production Ready** — Rejects template/placeholder values
+- **IDE Support** — Autocomplete and validation in VS Code, WebStorm, etc.
 
-## What This Schema Does
+## Schema URLs
 
-The VideoFormation Blueprint Schema validates JSON-driven video production specifications, ensuring:
+| Version | URL | Status |
+|---------|-----|--------|
+| Latest | `https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json` | Recommended |
+| v1.1.0 | `https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/v1.1.0.json` | Stable |
 
-- **Type Safety** - All asset types have proper enum constraints
-- **Structure Validation** - Required fields and proper nesting
-- **Production Ready** - Rejects template/placeholder values
-- **IDE Support** - Autocomplete and validation in VS Code, WebStorm, etc.
-
-## Key Features
-
-### Asset Type Specialization
-Instead of generic `AssetEntry`, the schema provides specialized types:
-
-```json
-"models": {
-  "type": "array",
-  "items": { "$ref": "#/$defs/ModelAsset" }
-},
-"audio": {
-  "type": "array", 
-  "items": { "$ref": "#/$defs/AudioAsset" }
-}
-// etc.
-```
-
-### Supported Asset Types
-
-| Asset Type | Format Examples | Key Properties |
-|------------|----------------|----------------|
-| **ModelAsset** | glb, fbx, vrm, usd, obj, blend | lod_levels, poly_count |
-| **AudioAsset** | bgm, score, sfx, ambience, voiceover, dialogue | format, sample_rate, loop |
-| **VfxAsset** | particle, simulation, compositing, shader | intensity, duration_frames |
-| **TextureAsset** | image, procedural, video | channels, scale, tiling |
-| **EnvironmentAsset** | hdri, skybox, procedural, plate | exposure, rotation_deg |
-| **ShaderAsset** | pbr, unlit, toon, custom | albedo_color, metallic, roughness |
-| **TextStyleAsset** | - | font_ref, size_px, color, stroke |
-| **GraphicsAsset** | image, svg, video, mogrt, vector | rights management |
-| **CaptionFileAsset** | srt, vtt, scc, ass, ssa | language (ISO format) |
-
-### Production Sequence Structure
-
-```json
-"production_sequence": {
-  "sequences": [
-    {
-      "sequence_id": "SEQ1",
-      "scenes": [
-        {
-          "scene_id": "S1",
-          "shots": [
-            {
-              "shot_id": "SEQ1.S1.SH1",
-              "duration_seconds": 5.0,
-              "camera": { ... },
-              "captions": { ... }
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
+---
 
 ## Minimal Valid Blueprint
 
 ```json
 {
-  "$schema": "https://github.com/socialawy/VideoFormation-Schema/blob/main/schemas/blueprint/v1.1.0.json",
+  "$schema": "https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json",
   "project_metadata": {
-    "system_codename": "videoformation",
     "project_id": "MINIMAL_01",
     "title": "Minimal Video",
-    "description": "A simple video project",
-    "content_type": "shortfilm",
-    "created_date": "2026-02-10",
-    "owner": "Your Name"
+    "content_type": "shortfilm"
   },
   "global_settings": {
     "fps": 30,
@@ -102,9 +41,87 @@ Instead of generic `AssetEntry`, the schema provides specialized types:
 }
 ```
 
-## Validation Examples
+## Schema Structure
+```
+blueprint.json
+├── $schema (string, uri)
+│
+├── project_metadata (required)
+│   ├── project_id (required)
+│   ├── title (required)
+│   ├── description
+│   ├── content_type (enum)
+│   ├── created_date
+│   ├── owner
+│   └── versioning
+│
+├── global_settings (required)
+│   ├── fps (required)
+│   ├── resolution_master (required)
+│   ├── timebase
+│   ├── pixel_aspect_ratio
+│   ├── color_pipeline
+│   ├── audio_defaults
+│   └── naming_conventions
+│
+├── asset_manifest
+│   ├── models[]
+│   ├── audio[]
+│   ├── textures[]
+│   ├── environments[]
+│   ├── shaders[]
+│   ├── vfx[]
+│   ├── graphics[]
+│   ├── text_styles[]
+│   ├── caption_files[]
+│   └── ...
+│
+├── production_sequence (required)
+│   └── sequences[]
+│       └── scenes[]
+│           └── shots[]
+│               ├── shot_id (required)
+│               ├── duration_seconds (required)
+│               ├── camera
+│               ├── dialogue[]
+│               ├── audio_timeline[]
+│               └── vfx_timeline[]
+│
+├── delivery_profiles[]
+├── render_instructions
+└── localization
+```
+## Asset Types
+The schema provides specialized types for different asset categories:
 
-### Valid Asset Entry
+| Asset Type | Formats | Key Properties |
+| ---------- | ------- | -------------- |
+| ModelAsset | glb, fbx, vrm, usd, obj, blend | lod_levels, poly_count |
+| AudioAsset | bgm, score, sfx, ambience, voiceover, dialogue | format, sample_rate, loop |
+| VfxAsset | particle, simulation, compositing, shader | intensity, duration_frames |
+| TextureAsset | image, procedural, video | channels, scale, tiling |
+| EnvironmentAsset | hdri, skybox, procedural, plate | exposure, rotation_deg |
+| ShaderAsset | pbr, unlit, toon, custom | albedo_color, metallic, roughness |
+| TextStyleAsset | - | font_ref, size_px, color, stroke |
+| GraphicsAsset | image, svg, video, mogrt, vector | rights management |
+| CaptionFileAsset | srt, vtt, scc, ass, ssa | language (ISO format) |
+
+
+### Example: Audio Asset
+```json
+{
+  "id": "BGM_MAIN",
+  "type": "bgm",
+  "source": "assets/audio/main-theme.mp3",
+  "properties": {
+    "format": "mp3",
+    "sample_rate": 48000,
+    "channels": 2,
+    "loop": true
+  }
+}
+```
+### Example: Environment Asset
 ```json
 {
   "id": "ENV_SKY_01",
@@ -118,64 +135,156 @@ Instead of generic `AssetEntry`, the schema provides specialized types:
 }
 ```
 
-### Invalid Asset Entry
+## Production Sequence
+> The production hierarchy: Sequences → Scenes → Shots
 ```json
 {
-  "id": "ENV_SKY_01", 
-  "type": "hdri|skybox",  // Pipe-separated not allowed
-  "source": "assets/environments/sky.hdr"
+  "production_sequence": {
+    "sequences": [
+      {
+        "sequence_id": "SEQ01",
+        "title": "Opening",
+        "scenes": [
+          {
+            "scene_id": "S01",
+            "title": "Intro Scene",
+            "shots": [
+              {
+                "shot_id": "SEQ01.S01.SH01",
+                "duration_seconds": 5.0,
+                "camera": {
+                  "type": "static",
+                  "lens_mm": 35,
+                  "position": { "x": 0, "y": 1.6, "z": 5 }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
+## Content Types
+Valid values for project_metadata.content_type:
 
-## Using with IDEs
+- shortfilm
+- commercial
+- music_video
+- documentary
+- social
+- tutorial
+- trailer
+- corporate
+- animation
+- other
 
-### VS Code
-Add to your `.vscode/settings.json`:
+## Validation
+- Invalid: Pipe-separated values
+```json
+{
+  "type": "hdri|skybox"
+}
+```
+❌ Schema rejects template placeholders
+
+
+- Valid: Single enum value
+```json
+{
+  "type": "hdri"
+}
+```
+✅ Passes validation
+
+## IDE Integration
+
+### VS Code: Add to .vscode/settings.json:
 ```json
 {
   "json.schemas": [
     {
-      "fileMatch": ["*/blueprint.json"],
-      "schema": "https://github.com/socialawy/VideoFormation-Schema/blob/main/schemas/blueprint/v1.1.0.json"
+      "fileMatch": ["**/blueprint.json"],
+      "url": "https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json"
     }
   ]
 }
 ```
+### JetBrains (WebStorm, IntelliJ)
+1. Settings → Languages & Frameworks → Schemas and DTDs → JSON Schema Mappings
+2. Add new mapping:
+    - Name: VideoFormation Blueprint
+    - Schema URL: https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json
+    - File path pattern: */blueprint.json
 
-### WebStorm/IntelliJ
-1. Go to Settings → Languages & Frameworks → Schemas and DTDs
-2. Add JSON Schema: `https://github.com/socialawy/VideoFormation-Schema/blob/main/schemas/blueprint/v1.1.0.json`
-3. Set file pattern: `*/blueprint.json`
-
-## Integration Examples
+## Programmatic Validation
 
 ### Node.js
 ```javascript
 const Ajv = require('ajv');
 const addFormats = require('ajv-formats');
 
-const ajv = new Ajv();
-addFormats(ajv);
+async function validateBlueprint(blueprint) {
+  const ajv = new Ajv({ strictSchema: false });
+  addFormats(ajv);
 
-const validate = ajv.compile(require('./blueprint.schema.json'));
-const valid = validate(require('./blueprint.json'));
+  const response = await fetch(
+    'https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json'
+  );
+  const schema = await response.json();
+  const validate = ajv.compile(schema);
 
-if (!valid) {
-  console.log('Validation errors:', validate.errors);
+  const valid = validate(blueprint);
+  return { valid, errors: validate.errors };
 }
 ```
-
 ### Python
 ```python
-import jsonschema
+import json
+import urllib.request
+from jsonschema import validate, ValidationError
 
-with open('blueprint.schema.json') as f:
-    schema = json.load(f)
-with open('blueprint.json') as f:
-    data = json.load(f)
+schema_url = "https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json"
+
+with urllib.request.urlopen(schema_url) as response:
+    schema = json.loads(response.read())
+
+with open("blueprint.json") as f:
+    blueprint = json.load(f)
 
 try:
-    jsonschema.validate(data, schema)
-    print("Valid blueprint")
-except jsonschema.ValidationError as e:
-    print(f"Validation error: {e}")
+    validate(blueprint, schema)
+    print("✅ Valid blueprint")
+except ValidationError as e:
+    print(f"❌ Validation error: {e.message}")
+```
+### CLI (using ajv-cli)
+```bash
+npm install -g ajv-cli ajv-formats
+
+ajv validate \
+  -s https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json \
+  -d blueprint.json \
+  --spec=draft2020 \
+  -c ajv-formats
+```
+
+Examples
+
+File | Description
+-----|------------
+[minimal.json](https://github.com/SocialAwy/VideoFormation-Schema/blob/master/examples/minimal.json) | Bare minimum valid blueprint
+[full.json](https://github.com/SocialAwy/VideoFormation-Schema/blob/master/examples/full.json) | Comprehensive example with all features
+[1_talking_head.json](https://github.com/SocialAwy/VideoFormation-Schema/blob/master/examples/1_talking_head.json) | Simple talking head video
+[2_interview.json](https://github.com/SocialAwy/VideoFormation-Schema/blob/master/examples/2_interview.json) | Multi-camera interview
+[3_explainer_slides.json](https://github.com/SocialAwy/VideoFormation-Schema/blob/master/examples/3_explainer_slides.json) | Slide-based explainer
+[4_product_showcase.json](https://github.com/SocialAwy/VideoFormation-Schema/blob/master/examples/4_product_showcase.json) | Product demo video
+[5_cinematic_trailer.json](https://github.com/SocialAwy/VideoFormation-Schema/blob/master/examples/5_cinematic_trailer.json) | Cinematic trailer with VFX
+[6_multi_language.json](https://github.com/SocialAwy/VideoFormation-Schema/blob/master/examples/6_multi_language.json) | Multi-language localization
+
+Changelog
+See [CHANGELOG.md](https://github.com/SocialAwy/VideoFormation-Schema/blob/master/CHANGELOG.md) for version history.
+
+License
+[Apache 2.0](https://github.com/SocialAwy/VideoFormation-Schema/blob/master/LICENSE)

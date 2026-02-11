@@ -1,0 +1,87 @@
+{
+  "$schema": "../blueprint.schema.json",
+  "project_metadata": {
+    "project_id": "TRL_005",
+    "title": "Action Movie Trailer",
+    "description": "Example 5: Short cinematic trailer. Shows dramatic pacing, fast cuts, music synchronization, and color grading.",
+    "content_type": "shortfilm"
+  },
+  "global_settings": {
+    "fps": 24,
+    "resolution_master": { "width": 3840, "height": 1600 }
+  },
+  "asset_manifest": {
+    "vfx": [
+      { "id": "VFX_EXPLOSION", "type": "particle", "source": "vfx/explosion_large.ns" }
+    ],
+    "audio": [
+      { "id": "SFX_BOOM", "type": "sfx", "source": "sfx/cinematic_boom.wav" },
+      { "id": "BGM_EPIC", "type": "bgm", "source": "music/epic_rise.wav" }
+    ],
+    "luts": [
+      { "id": "LUT_TEAL_ORANGE", "type": "cube", "source": "luts/blockbuster.cube" }
+    ]
+  },
+  "production_sequence": {
+    "sequences": [
+      {
+        "sequence_id": "SEQ_TRAILER",
+        "scenes": [
+          {
+            "scene_id": "S01_CLIMAX",
+            "shots": [
+              {
+                "shot_id": "SH01_SILENCE",
+                "duration_seconds": 1.0,
+                "edit": { "transition_in": "fade" },
+                "action_notes": "Black screen. Heartbeat sound.",
+                "color_grading": { "exposure": -5.0 }
+              },
+              {
+                "shot_id": "SH02_ACTION",
+                "duration_seconds": 0.8,
+                "action_notes": "Hero jumps from helicopter.",
+                "color_grading": { "lut_ref": "LUT_TEAL_ORANGE", "contrast": 1.2 },
+                "audio_timeline": [
+                  { "timestamp": 0.0, "event_type": "audio_play", "asset_ref": "SFX_BOOM", "params": { "volume_db": 0.0 } },
+                  { "timestamp": 0.0, "event_type": "music_start", "asset_ref": "BGM_EPIC" }
+                ]
+              },
+              {
+                "shot_id": "SH03_REACTION",
+                "duration_seconds": 0.5,
+                "action_notes": "Villain turns around.",
+                "camera": { "id": "CAM_ZOOM", "lens_mm": 100 }
+              },
+              {
+                "shot_id": "SH04_EXPLOSION",
+                "duration_seconds": 1.5,
+                "action_notes": "Base explodes.",
+                "vfx_timeline": [
+                  { "timestamp": 0.1, "event_type": "vfx_trigger", "asset_ref": "VFX_EXPLOSION", "params": { "intensity": 5.0 } }
+                ],
+                "render_instructions": {
+                  "master": { "post_processing": { "bloom": { "enabled": true, "intensity": 1.5 } } }
+                }
+              },
+              {
+                "shot_id": "SH05_TITLE",
+                "duration_seconds": 2.0,
+                "edit": { "transition_out": "fade" },
+                "on_screen_text": [
+                  {
+                    "start": 0.0,
+                    "end": 2.0,
+                    "text": "COMING SOON",
+                    "anchor": "center",
+                    "style_ref": "STYLE_TITLE"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

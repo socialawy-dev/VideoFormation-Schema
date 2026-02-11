@@ -1,0 +1,84 @@
+{
+  "$schema": "../blueprint.schema.json",
+  "project_metadata": {
+    "project_id": "EXPL_003",
+    "title": "Product Tutorial",
+    "description": "Example 3: Slides + voiceover + simple transitions. Typical structure for explainers and tutorials.",
+    "content_type": "ad"
+  },
+  "global_settings": {
+    "fps": 30,
+    "resolution_master": { "width": 1920, "height": 1080 }
+  },
+  "asset_manifest": {
+    "textures": [
+      { "id": "SLIDE_1", "type": "image", "source": "slides/intro.png" },
+      { "id": "SLIDE_2", "type": "image", "source": "slides/features.png" },
+      { "id": "SLIDE_3", "type": "image", "source": "slides/pricing.png" }
+    ],
+    "audio": [
+      { "id": "VO_TRACK", "type": "voiceover", "source": "audio/vo_full.wav" },
+      { "id": "BGM_LIGHT", "type": "bgm", "source": "audio/light_pop.mp3" }
+    ]
+  },
+  "production_sequence": {
+    "sequences": [
+      {
+        "sequence_id": "SEQ01",
+        "scenes": [
+          {
+            "scene_id": "S01",
+            "shots": [
+              {
+                "shot_id": "SH01",
+                "duration_seconds": 5.0,
+                "action_notes": "Display Slide 1",
+                "edit": { "transition_out": "wipe" },
+                "graphics_timeline": [
+                  {
+                    "timestamp": 0.0,
+                    "event_type": "graphic_show",
+                    "asset_ref": "SLIDE_1",
+                    "params": { "position_norm": [0.5, 0.5], "scale": 1.0 }
+                  }
+                ],
+                "audio_timeline": [
+                  { "timestamp": 0.0, "event_type": "music_start", "asset_ref": "BGM_LIGHT", "params": { "volume_db": -10 } },
+                  { "timestamp": 0.5, "event_type": "vo_start", "asset_ref": "VO_TRACK", "params": { "start_offset": 0.0 } }
+                ]
+              },
+              {
+                "shot_id": "SH02",
+                "duration_seconds": 8.0,
+                "action_notes": "Display Slide 2",
+                "edit": { "transition_in": "wipe", "transition_out": "fade" },
+                "graphics_timeline": [
+                  {
+                    "timestamp": 0.0,
+                    "event_type": "graphic_show",
+                    "asset_ref": "SLIDE_2",
+                    "params": { "position_norm": [0.5, 0.5], "scale": 1.0 }
+                  }
+                ]
+              },
+              {
+                "shot_id": "SH03",
+                "duration_seconds": 4.0,
+                "action_notes": "Display Slide 3",
+                "edit": { "transition_in": "fade" },
+                "graphics_timeline": [
+                  {
+                    "timestamp": 0.0,
+                    "event_type": "graphic_show",
+                    "asset_ref": "SLIDE_3",
+                    "params": { "position_norm": [0.5, 0.5], "scale": 1.0 }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -42,6 +42,18 @@
     "production_sequence": {
       "$ref": "#/$defs/ProductionSequence"
     },
+    "audio_timeline": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SequenceAudioTimeline"
+      }
+    },
+    "vfx_timeline": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SequenceVfxTimeline"
+      }
+    },
     "render_instructions": {
       "$ref": "#/$defs/RenderInstructions"
     },
@@ -195,6 +207,12 @@
             "default_handles_frames": {
               "type": "integer"
             },
+            "handles_unit": {
+              "type": "string"
+            },
+            "handles_default": {
+              "type": "integer"
+            },
             "proxy_workflow": {
               "type": "object",
               "properties": {
@@ -225,6 +243,21 @@
             },
             "simulation_policy": {
               "type": "string"
+            },
+            "laptop_cpu": {
+              "type": "string"
+            },
+            "laptop_gpu": {
+              "type": "string"
+            },
+            "ram_gb": {
+              "type": "integer"
+            },
+            "preferred_techniques": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         },
@@ -322,21 +355,11 @@
       "properties": {
         "status": {
           "type": "string",
-          "enum": [
-            "draft",
-            "in_progress",
-            "review",
-            "approved",
-            "locked"
-          ]
+          "pattern": "^(draft|in_progress|review|approved|locked)(\\|.*)?$"
         },
         "priority": {
           "type": "string",
-          "enum": [
-            "low",
-            "normal",
-            "high"
-          ]
+          "pattern": "^(low|normal|high)(\\|.*)?$"
         },
         "review": {
           "type": "object",
@@ -359,7 +382,38 @@
           }
         },
         "approvals": {
-          "type": "array"
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "type": "string",
+                "enum": [
+                  "Director",
+                  "Producer",
+                  "Client",
+                  "Creative Director",
+                  "Supervisor"
+                ],
+                "description": "Role of approver"
+              },
+              "name": {
+                "type": "string"
+              },
+              "approved": {
+                "type": "boolean",
+                "default": false
+              },
+              "date": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                "description": "Approval date in YYYY-MM-DD format"
+              }
+            }
+          }
         }
       }
     },
@@ -375,19 +429,19 @@
         "locations": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/AssetEntry"
+            "$ref": "#/$defs/LocationAsset"
           }
         },
         "characters": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/AssetEntry"
+            "$ref": "#/$defs/CharacterAsset"
           }
         },
         "props": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/AssetEntry"
+            "$ref": "#/$defs/PropAsset"
           }
         },
         "models": {
@@ -411,7 +465,7 @@
         "fonts": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/AssetEntry"
+            "$ref": "#/$defs/FontAsset"
           }
         },
         "text_styles": {
@@ -423,7 +477,7 @@
         "luts": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/AssetEntry"
+            "$ref": "#/$defs/LutAsset"
           }
         },
         "audio": {
@@ -552,7 +606,31 @@
           "type": "string"
         },
         "style_guide": {
-          "type": "object"
+          "type": "object",
+          "properties": {
+            "palette_hex": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^#[0-9A-Fa-f]{6}$"
+              },
+              "description": "Color palette as hex codes"
+            },
+            "contrast_level": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "normal"
+              ]
+            },
+            "film_grain_intensity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
         },
         "scenes": {
           "type": "array",
@@ -586,7 +664,31 @@
           "$ref": "#/$defs/Confidence"
         },
         "stage_setup": {
-          "type": "object"
+          "type": "object",
+          "properties": {
+            "environment_ref": {
+              "type": "string",
+              "description": "Reference to environment asset ID"
+            },
+            "actors": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ActorInstance"
+              }
+            },
+            "props": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/PropInstance"
+              }
+            },
+            "lights": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/LightDefinition"
+              }
+            }
+          }
         },
         "shots": {
           "type": "array",
@@ -656,7 +758,29 @@
           "$ref": "#/$defs/Camera"
         },
         "edit": {
-          "type": "object"
+          "type": "object",
+          "properties": {
+            "transition_in": {
+              "type": "string",
+              "enum": [
+                "cut",
+                "fade",
+                "wipe",
+                "dissolve"
+              ],
+              "default": "cut"
+            },
+            "transition_out": {
+              "type": "string",
+              "enum": [
+                "cut",
+                "fade",
+                "wipe",
+                "dissolve"
+              ],
+              "default": "cut"
+            }
+          }
         },
         "action_notes": {
           "type": "string"
@@ -695,6 +819,12 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/VfxEvent"
+          }
+        },
+        "graphics_timeline": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/GraphicsEvent"
           }
         },
         "color_grading": {
@@ -750,7 +880,51 @@
           "type": "number"
         },
         "path": {
-          "type": "array"
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "time",
+              "position",
+              "target"
+            ],
+            "properties": {
+              "time": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Timestamp in seconds"
+              },
+              "position": {
+                "type": [
+                  "array",
+                  "string"
+                ],
+                "description": "[x, y, z] camera position or string representation"
+              },
+              "target": {
+                "type": [
+                  "array",
+                  "string"
+                ],
+                "description": "[x, y, z] look-at target or string representation"
+              },
+              "easing": {
+                "type": "string",
+                "enum": [
+                  "linear",
+                  "easeInOutCubic",
+                  "easeInCubic",
+                  "easeOutCubic",
+                  "easeInOutQuad",
+                  "easeInQuad",
+                  "easeOutQuad",
+                  "easeInOutSine"
+                ],
+                "default": "linear",
+                "description": "Animation easing function"
+              }
+            }
+          }
         },
         "depth_of_field": {
           "type": "object",
@@ -813,11 +987,7 @@
         },
         "mode": {
           "type": "string",
-          "enum": [
-            "vo",
-            "dialogue",
-            "off"
-          ],
+          "pattern": "^(vo|dialogue|off)(\\|.*)?$",
           "description": "Voiceover, on-screen dialogue, or off-screen"
         },
         "text": {
@@ -882,7 +1052,10 @@
             "top-left",
             "top-right",
             "bottom-left",
-            "bottom-right"
+            "bottom-right",
+            "center-top",
+            "center-bottom",
+            "lower-right"
           ],
           "default": "center",
           "description": "Text anchor point"
@@ -906,7 +1079,10 @@
             "audio_play",
             "audio_stop",
             "audio_pause",
-            "audio_resume"
+            "audio_resume",
+            "audio_adjust",
+            "music_start",
+            "vo_start"
           ],
           "default": "audio_play"
         },
@@ -926,6 +1102,16 @@
               "type": "number",
               "minimum": 0,
               "description": "Fade out duration in seconds"
+            },
+            "fade_to": {
+              "type": "number",
+              "description": "Target volume"
+            },
+            "time": {
+              "type": "number"
+            },
+            "duck_to": {
+              "type": "number"
             },
             "volume_db": {
               "type": "number",
@@ -1005,6 +1191,10 @@
     },
     "VfxEvent": {
       "type": "object",
+      "required": [
+        "timestamp",
+        "asset_ref"
+      ],
       "properties": {
         "timestamp": {
           "type": "number",
@@ -1016,7 +1206,11 @@
           "enum": [
             "vfx_start",
             "vfx_stop",
-            "vfx_trigger"
+            "vfx_trigger",
+            "vfx_play",
+            "vfx_layer",
+            "particle_shimmer",
+            "glint_hits"
           ],
           "default": "vfx_start"
         },
@@ -1039,6 +1233,21 @@
             "loop": {
               "type": "boolean",
               "default": false
+            },
+            "blend_mode": {
+              "type": "string"
+            },
+            "prebaked": {
+              "type": "boolean"
+            },
+            "opacity": {
+              "type": "number"
+            },
+            "count": {
+              "type": "number"
+            },
+            "layer": {
+              "type": "string"
             }
           },
           "additionalProperties": true
@@ -1172,13 +1381,7 @@
     },
     "Confidence": {
       "type": "string",
-      "enum": [
-        "low",
-        "medium",
-        "high",
-        "estimated",
-        "confirmed"
-      ],
+      "pattern": "^(low|medium|high|estimated|confirmed)(\\|.*)?$",
       "description": "Confidence level for estimates or data"
     },
     "AssetRights": {
@@ -1186,18 +1389,13 @@
       "properties": {
         "license": {
           "type": "string",
-          "enum": [
-            "unknown",
-            "original",
-            "purchased",
-            "licensed",
-            "open",
-            "creative_commons",
-            "public_domain"
-          ]
+          "pattern": "^(unknown|original|purchased|licensed|open|creative_commons|public_domain)(\\|.*)?$"
         },
         "source_url": {
-          "type": "string",
+          "type": [
+            "string",
+            "null"
+          ],
           "format": "uri"
         },
         "credit_required": {
@@ -1222,14 +1420,7 @@
           "properties": {
             "type": {
               "type": "string",
-              "enum": [
-                "glb",
-                "fbx",
-                "vrm",
-                "usd",
-                "obj",
-                "blend"
-              ]
+              "pattern": "^(glb|fbx|vrm|usd|obj|blend)(\\|.*)?$"
             },
             "lod_levels": {
               "type": "array",
@@ -1284,24 +1475,11 @@
           "properties": {
             "type": {
               "type": "string",
-              "enum": [
-                "bgm",
-                "score",
-                "sfx",
-                "ambience",
-                "voiceover",
-                "dialogue"
-              ]
+              "pattern": "^(bgm|score|sfx|ambience|voiceover|dialogue)(\\|.*)?$"
             },
             "format": {
               "type": "string",
-              "enum": [
-                "stereo",
-                "mono",
-                "ambisonic",
-                "5.1",
-                "7.1"
-              ]
+              "pattern": "^(stereo|mono|ambisonic|5.1|7.1)(\\|.*)?$"
             },
             "preload": {
               "type": "boolean",
@@ -1343,12 +1521,7 @@
           "properties": {
             "type": {
               "type": "string",
-              "enum": [
-                "particle",
-                "simulation",
-                "compositing",
-                "shader"
-              ]
+              "pattern": "^(particle|simulation|compositing|shader|particle_pass|sfx_pass)(\\|.*)?$"
             },
             "properties": {
               "type": "object",
@@ -1364,6 +1537,12 @@
                 "loop": {
                   "type": "boolean",
                   "default": false
+                },
+                "polys_estimate": {
+                  "type": "number"
+                },
+                "texture_ref": {
+                  "type": "string"
                 }
               },
               "additionalProperties": true
@@ -1385,11 +1564,7 @@
           "properties": {
             "type": {
               "type": "string",
-              "enum": [
-                "image",
-                "procedural",
-                "video"
-              ]
+              "pattern": "^(image|procedural|video)(\\|.*)?$"
             },
             "channels": {
               "type": "string",
@@ -1439,12 +1614,7 @@
           "properties": {
             "type": {
               "type": "string",
-              "enum": [
-                "hdri",
-                "skybox",
-                "procedural",
-                "plate"
-              ]
+              "pattern": "^(hdri|skybox|procedural|plate)(\\|.*)?$"
             },
             "preload": {
               "type": "boolean",
@@ -1484,12 +1654,7 @@
           "properties": {
             "type": {
               "type": "string",
-              "enum": [
-                "pbr",
-                "unlit",
-                "toon",
-                "custom"
-              ]
+              "pattern": "^(pbr|unlit|toon|custom)(\\|.*)?$"
             },
             "parameters": {
               "type": "object",
@@ -1592,13 +1757,7 @@
           "properties": {
             "type": {
               "type": "string",
-              "enum": [
-                "image",
-                "svg",
-                "video",
-                "mogrt",
-                "vector"
-              ]
+              "pattern": "^(image|svg|video|mogrt|vector)(\\|.*)?$"
             },
             "rights": {
               "$ref": "#/$defs/AssetRights"
@@ -1625,13 +1784,7 @@
             },
             "format": {
               "type": "string",
-              "enum": [
-                "srt",
-                "vtt",
-                "scc",
-                "ass",
-                "ssa"
-              ]
+              "pattern": "^(srt|vtt|scc|ass|ssa)(\\|.*)?$"
             }
           }
         }
@@ -1649,6 +1802,386 @@
         },
         "height": {
           "type": "integer"
+        }
+      }
+    },
+    "Transform": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "description": "[x, y, z] position in world space"
+        },
+        "rotation_deg": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "description": "[pitch, yaw, roll] rotation in degrees"
+        },
+        "scale": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "default": [
+            1,
+            1,
+            1
+          ],
+          "description": "[x, y, z] scale factors"
+        }
+      }
+    },
+    "LightDefinition": {
+      "type": "object",
+      "required": [
+        "id",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "directional",
+            "point",
+            "spot",
+            "area"
+          ]
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$",
+          "description": "Hex color code"
+        },
+        "intensity": {
+          "type": "number",
+          "minimum": 0
+        },
+        "position": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "rotation_deg": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "cast_shadows": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "ActorInstance": {
+      "type": "object",
+      "required": [
+        "asset_ref",
+        "instance_id"
+      ],
+      "properties": {
+        "asset_ref": {
+          "type": "string",
+          "description": "Reference to model or character asset ID"
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "Unique instance identifier"
+        },
+        "initial_state": {
+          "$ref": "#/$defs/Transform"
+        },
+        "material_overrides": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "slot": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "shader_ref": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "PropInstance": {
+      "type": "object",
+      "required": [
+        "asset_ref",
+        "instance_id"
+      ],
+      "properties": {
+        "asset_ref": {
+          "type": "string"
+        },
+        "instance_id": {
+          "type": "string"
+        },
+        "initial_state": {
+          "$ref": "#/$defs/Transform"
+        }
+      }
+    },
+    "GraphicsEvent": {
+      "type": "object",
+      "required": [
+        "timestamp",
+        "asset_ref"
+      ],
+      "properties": {
+        "timestamp": {
+          "type": "number",
+          "minimum": 0
+        },
+        "event_type": {
+          "type": "string",
+          "enum": [
+            "graphic_show",
+            "graphic_hide",
+            "graphic_animate"
+          ],
+          "default": "graphic_show"
+        },
+        "asset_ref": {
+          "type": "string",
+          "description": "Reference to graphics asset ID"
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "duration_seconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "fade_in_seconds": {
+              "type": "number",
+              "minimum": 0,
+              "default": 0
+            },
+            "fade_out_seconds": {
+              "type": "number",
+              "minimum": 0,
+              "default": 0
+            },
+            "position_norm": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "scale": {
+              "type": "number",
+              "minimum": 0
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "CharacterAsset": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AssetEntry"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "display_name": {
+              "type": "string",
+              "description": "Human-readable character name"
+            },
+            "model_ref": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Reference to character model asset ID"
+            },
+            "voice_ref": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Reference to voice audio asset ID"
+            },
+            "wardrobe_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "References to wardrobe/costume model asset IDs"
+            },
+            "expressions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Available facial expressions or blend shapes"
+            }
+          }
+        }
+      ]
+    },
+    "LocationAsset": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AssetEntry"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "display_name": {
+              "type": "string",
+              "description": "Human-readable location name"
+            },
+            "environment_ref": {
+              "type": "string",
+              "description": "Reference to environment asset ID for this location"
+            },
+            "notes": {
+              "type": "string",
+              "description": "Set dressing notes, blocking notes, etc."
+            }
+          }
+        }
+      ]
+    },
+    "PropAsset": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AssetEntry"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "pattern": "^(model|image|video)(\\|.*)?$"
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Tags like 'handheld', 'background', 'interactive'"
+            }
+          }
+        }
+      ]
+    },
+    "FontAsset": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AssetEntry"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string",
+              "description": "Path to font file (ttf, otf, woff, etc.)"
+            },
+            "rights": {
+              "$ref": "#/$defs/AssetRights"
+            }
+          }
+        }
+      ]
+    },
+    "LutAsset": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/AssetEntry"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string",
+              "description": "Path to LUT file (.cube, .3dl, etc.)"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "SequenceAudioTimeline": {
+      "type": "object",
+      "required": [
+        "sequence_ref",
+        "events"
+      ],
+      "properties": {
+        "sequence_ref": {
+          "type": "string"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AudioEvent"
+          }
+        }
+      }
+    },
+    "SequenceVfxTimeline": {
+      "type": "object",
+      "required": [
+        "sequence_ref",
+        "events"
+      ],
+      "properties": {
+        "sequence_ref": {
+          "type": "string"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/VfxEvent"
+          }
         }
       }
     }

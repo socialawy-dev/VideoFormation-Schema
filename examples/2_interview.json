@@ -1,0 +1,92 @@
+{
+  "$schema": "../blueprint.schema.json",
+  "project_metadata": {
+    "project_id": "INT_002",
+    "title": "Tech Talk Interview",
+    "description": "Example 2: Two-speaker dialogue / interview. Demonstrates switching camera angles between speakers (Shot-Reverse-Shot).",
+    "content_type": "documentary"
+  },
+  "global_settings": {
+    "fps": 24,
+    "resolution_master": {
+      "width": 1920,
+      "height": 1080
+    }
+  },
+  "asset_manifest": {
+    "characters": [
+      { "id": "HOST", "display_name": "Interviewer", "type": "metahuman" },
+      { "id": "GUEST", "display_name": "Expert", "type": "metahuman" }
+    ],
+    "environments": [
+      { "id": "STUDIO_A", "type": "hdri", "source": "studio_soft_lights.hdr" }
+    ]
+  },
+  "production_sequence": {
+    "sequences": [
+      {
+        "sequence_id": "SEQ01",
+        "scenes": [
+          {
+            "scene_id": "S01",
+            "stage_setup": {
+              "environment_ref": "STUDIO_A",
+              "actors": [
+                {
+                  "asset_ref": "HOST",
+                  "instance_id": "HOST_INST",
+                  "initial_state": { "position": [-1, 0, 0], "rotation_deg": [0, 45, 0] }
+                },
+                {
+                  "asset_ref": "GUEST",
+                  "instance_id": "GUEST_INST",
+                  "initial_state": { "position": [1, 0, 0], "rotation_deg": [0, -45, 0] }
+                }
+              ]
+            },
+            "shots": [
+              {
+                "shot_id": "SEQ01.S01.SH01",
+                "slug": "Two Shot",
+                "duration_seconds": 3.0,
+                "camera": {
+                  "id": "CAM_WIDE",
+                  "path": [{ "time": 0, "position": [0, 1.5, 3], "target": [0, 1, 0] }]
+                },
+                "dialogue": [
+                  { "timestamp": 0.5, "speaker_ref": "HOST", "text": "Thanks for joining us.", "mode": "dialogue" }
+                ]
+              },
+              {
+                "shot_id": "SEQ01.S01.SH02",
+                "slug": "CU Guest",
+                "duration_seconds": 4.0,
+                "camera": {
+                  "id": "CAM_CU_GUEST",
+                  "lens_mm": 85,
+                  "path": [{ "time": 0, "position": [-1.5, 1.4, 1.5], "target": [1, 1, 0] }]
+                },
+                "dialogue": [
+                  { "timestamp": 0.0, "speaker_ref": "GUEST", "text": "It's great to be here to talk about AI.", "mode": "dialogue" }
+                ]
+              },
+              {
+                "shot_id": "SEQ01.S01.SH03",
+                "slug": "CU Host",
+                "duration_seconds": 2.5,
+                "camera": {
+                  "id": "CAM_CU_HOST",
+                  "lens_mm": 85,
+                  "path": [{ "time": 0, "position": [1.5, 1.4, 1.5], "target": [-1, 1, 0] }]
+                },
+                "dialogue": [
+                  { "timestamp": 0.0, "speaker_ref": "HOST", "text": "Let's dive right in.", "mode": "dialogue" }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
