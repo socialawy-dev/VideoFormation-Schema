@@ -285,10 +285,8 @@ ajv validate \
 | **[5_cinematic_trailer.json](../examples/5_cinematic_trailer.json)** | High-production trailer with advanced transitions, color grading, and sound design | Cinematic content |
 | **[6_multi_language.json](../examples/6_multi_language.json)** | Content prepared for localization with multiple subtitle tracks and audio versions | International content |
 
-**Interactive Viewer**: View these examples in the interactive [viewer.html](../viewer.html) or browse them in the [examples gallery](../examples.html).
-
 Changelog
-See [CHANGELOG.md](https://github.com/socialawy/VideoFormation-Schema/blob/main/docs/CHANGELOG.md) for version history.
+See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 License
 [Apache 2.0](https://github.com/SocialAwy/VideoFormation-Schema/blob/master/LICENSE)
