@@ -288,7 +288,7 @@ ajv validate \
 **Interactive Viewer**: View these examples in the interactive [viewer.html](../viewer.html) or browse them in the [examples gallery](../examples.html).
 
 Changelog
-See [CHANGELOG.md](https://github.com/SocialAwy/VideoFormation-Schema/blob/master/CHANGELOG.md) for version history.
+See [CHANGELOG.md](https://github.com/socialawy/VideoFormation-Schema/blob/main/docs/CHANGELOG.md) for version history.
 
 License
 [Apache 2.0](https://github.com/SocialAwy/VideoFormation-Schema/blob/master/LICENSE)
