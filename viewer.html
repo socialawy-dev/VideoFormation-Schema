@@ -287,6 +287,8 @@
 
     <!-- Markdown renderer -->
     <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <!-- DOMPurify sanitizer -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
 
     <script>
         // Configuration
@@ -295,7 +297,14 @@
         // Get file path from URL hash
         function getFilePath() {
             const hash = window.location.hash.slice(1);
-            return hash || '/docs/README.md';
+            const path = hash || '/docs/README.md';
+
+            // Security: Prevent external URLs or protocol-relative URLs
+            if (path.includes('://') || path.trim().startsWith('//')) {
+                console.error('Security blocked: External URL access attempt');
+                return '/docs/README.md';
+            }
+            return path;
         }
 
         // Update breadcrumb
@@ -333,7 +342,7 @@
             `;
             
             const contentDiv = main.querySelector('.markdown-content');
-            contentDiv.innerHTML = marked.parse(content);
+            contentDiv.innerHTML = DOMPurify.sanitize(marked.parse(content));
 
             // Fix relative links to use viewer
             contentDiv.querySelectorAll('a').forEach(link => {
