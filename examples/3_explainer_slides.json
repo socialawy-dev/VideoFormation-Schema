@@ -1,5 +1,5 @@
 {
-  "$schema": "../blueprint.schema.json",
+  "$schema": "https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json",
   "project_metadata": {
     "project_id": "EXPL_003",
     "title": "Product Tutorial",
@@ -30,7 +30,7 @@
             "scene_id": "S01",
             "shots": [
               {
-                "shot_id": "SH01",
+                "shot_id": "SEQ01.S01.SH01",
                 "duration_seconds": 5.0,
                 "action_notes": "Display Slide 1",
                 "edit": { "transition_out": "wipe" },
@@ -48,7 +48,7 @@
                 ]
               },
               {
-                "shot_id": "SH02",
+                "shot_id": "SEQ01.S01.SH02",
                 "duration_seconds": 8.0,
                 "action_notes": "Display Slide 2",
                 "edit": { "transition_in": "wipe", "transition_out": "fade" },
@@ -62,7 +62,7 @@
                 ]
               },
               {
-                "shot_id": "SH03",
+                "shot_id": "SEQ01.S01.SH03",
                 "duration_seconds": 4.0,
                 "action_notes": "Display Slide 3",
                 "edit": { "transition_in": "fade" },

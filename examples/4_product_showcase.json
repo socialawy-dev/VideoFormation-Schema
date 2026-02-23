@@ -1,10 +1,10 @@
 {
-  "$schema": "../blueprint.schema.json",
+  "$schema": "https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json",
   "project_metadata": {
     "project_id": "PROD_004",
     "title": "Smart Watch Reveal",
     "description": "Example 4: Product showcase. Focuses on asset layering, smooth camera movement, and high-fidelity lighting.",
-    "content_type": "commercial"
+    "content_type": "ad"
   },
   "global_settings": {
     "fps": 60,
@@ -45,7 +45,7 @@
             },
             "shots": [
               {
-                "shot_id": "SH01",
+                "shot_id": "SEQ01.S01.SH01",
                 "slug": "Orbit Reveal",
                 "duration_seconds": 6.0,
                 "camera": {

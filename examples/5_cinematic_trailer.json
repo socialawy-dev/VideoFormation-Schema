@@ -1,5 +1,5 @@
 {
-  "$schema": "../blueprint.schema.json",
+  "$schema": "https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json",
   "project_metadata": {
     "project_id": "TRL_005",
     "title": "Action Movie Trailer",
@@ -25,20 +25,24 @@
   "production_sequence": {
     "sequences": [
       {
-        "sequence_id": "SEQ_TRAILER",
+        "sequence_id": "SEQ01",
+        "slug": "Trailer",
         "scenes": [
           {
-            "scene_id": "S01_CLIMAX",
+            "scene_id": "S01",
+            "slug": "Climax",
             "shots": [
               {
-                "shot_id": "SH01_SILENCE",
+                "shot_id": "SEQ01.S01.SH01",
+                "slug": "Silence",
                 "duration_seconds": 1.0,
                 "edit": { "transition_in": "fade" },
                 "action_notes": "Black screen. Heartbeat sound.",
                 "color_grading": { "exposure": -5.0 }
               },
               {
-                "shot_id": "SH02_ACTION",
+                "shot_id": "SEQ01.S01.SH02",
+                "slug": "Action",
                 "duration_seconds": 0.8,
                 "action_notes": "Hero jumps from helicopter.",
                 "color_grading": { "lut_ref": "LUT_TEAL_ORANGE", "contrast": 1.2 },
@@ -48,13 +52,15 @@
                 ]
               },
               {
-                "shot_id": "SH03_REACTION",
+                "shot_id": "SEQ01.S01.SH03",
+                "slug": "Reaction",
                 "duration_seconds": 0.5,
                 "action_notes": "Villain turns around.",
                 "camera": { "id": "CAM_ZOOM", "lens_mm": 100 }
               },
               {
-                "shot_id": "SH04_EXPLOSION",
+                "shot_id": "SEQ01.S01.SH04",
+                "slug": "Explosion",
                 "duration_seconds": 1.5,
                 "action_notes": "Base explodes.",
                 "vfx_timeline": [
@@ -65,7 +71,8 @@
                 }
               },
               {
-                "shot_id": "SH05_TITLE",
+                "shot_id": "SEQ01.S01.SH05",
+                "slug": "Title",
                 "duration_seconds": 2.0,
                 "edit": { "transition_out": "fade" },
                 "on_screen_text": [
