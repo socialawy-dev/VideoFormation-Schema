@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self'; object-src 'none'; base-uri 'self';">
     <title>Viewer - VideoFormation Schema</title>
     <style>
         :root {
@@ -287,6 +288,7 @@
 
     <!-- Markdown renderer -->
     <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.3.1/dist/purify.min.js"></script>
 
     <script>
         // Configuration
@@ -333,7 +335,7 @@
             `;
             
             const contentDiv = main.querySelector('.markdown-content');
-            contentDiv.innerHTML = marked.parse(content);
+            contentDiv.innerHTML = DOMPurify.sanitize(marked.parse(content));
 
             // Fix relative links to use viewer
             contentDiv.querySelectorAll('a').forEach(link => {
