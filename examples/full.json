@@ -1,5 +1,5 @@
 {
-  "$schema": "../blueprint.schema.json",
+  "$schema": "https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json",
   "project_metadata": {
     "system_codename": "videoformation",
     "project_id": "NEON_HORIZON_001",

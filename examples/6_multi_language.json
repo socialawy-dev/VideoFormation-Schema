@@ -1,5 +1,5 @@
 {
-  "$schema": "../blueprint.schema.json",
+  "$schema": "https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json",
   "project_metadata": {
     "project_id": "LOC_006",
     "title": "Global Campaign",
@@ -46,7 +46,7 @@
             },
             "shots": [
               {
-                "shot_id": "SH01",
+                "shot_id": "SEQ01.S01.SH01",
                 "duration_seconds": 10.0,
                 "dialogue": [
                   {

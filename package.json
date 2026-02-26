@@ -1,0 +1,12 @@
+{
+  "name": "videoformation-schema",
+  "version": "1.0.0",
+  "description": "JSON Schema for video production pipeline specifications",
+  "scripts": {
+    "validate": "ajv validate -s schemas/blueprint/latest.json --spec=draft2020 -c ajv-formats -d"
+  },
+  "devDependencies": {
+    "ajv-cli": "^5.0.0",
+    "ajv-formats": "^2.1.1"
+  }
+}

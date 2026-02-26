@@ -1,5 +1,5 @@
 {
-  "$schema": "../blueprint.schema.json",
+  "$schema": "https://socialawy.github.io/VideoFormation-Schema/schemas/blueprint/latest.json",
   "project_metadata": {
     "project_id": "INT_002",
     "title": "Tech Talk Interview",
