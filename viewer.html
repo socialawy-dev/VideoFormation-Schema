@@ -287,6 +287,7 @@
 
     <!-- Markdown renderer -->
     <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
 
     <script>
         // Configuration
@@ -333,7 +334,8 @@
             `;
             
             const contentDiv = main.querySelector('.markdown-content');
-            contentDiv.innerHTML = marked.parse(content);
+            // Sanitize markdown output to prevent XSS
+            contentDiv.innerHTML = DOMPurify.sanitize(marked.parse(content));
 
             // Fix relative links to use viewer
             contentDiv.querySelectorAll('a').forEach(link => {
@@ -405,13 +407,16 @@
 
         // Show error
         function showError(message) {
-            document.getElementById('content').innerHTML = `
+            const content = document.getElementById('content');
+            content.innerHTML = `
                 <div class="error">
                     <h2>⚠️ Error</h2>
-                    <p>${message}</p>
+                    <p id="error-message"></p>
                     <a href="./" class="btn" style="margin-top: 20px; display: inline-block;">Back to Home</a>
                 </div>
             `;
+            // Set message as textContent to prevent XSS if message contains user input (e.g., URL hash)
+            document.getElementById('error-message').textContent = message;
         }
 
         // Load and render file
