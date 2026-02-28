@@ -1,0 +1,4 @@
+## 2026-02-28 - [DOM-Based XSS in Markdown Viewers]
+**Vulnerability:** `viewer.html` rendered user-supplied Markdown directly into the DOM using `marked.parse()` without sanitization. Error messages containing user-supplied URLs were also injected directly as HTML. This allows executing arbitrary JavaScript via specially crafted Markdown (e.g., `<img src=x onerror=alert(1)>`) or URL hash parameters.
+**Learning:** Markdown parsing libraries like `marked` do not inherently sanitize the HTML they produce. Any Markdown content coming from external files or user input (including URL hashes) must be explicitly sanitized before being rendered to the DOM to prevent DOM-based XSS.
+**Prevention:** Always use a dedicated HTML sanitizer like `DOMPurify` to clean the output of Markdown parsers (`DOMPurify.sanitize(marked.parse(content))`). For error messages containing user input or dynamic values, always use `.textContent` instead of `.innerHTML`.
