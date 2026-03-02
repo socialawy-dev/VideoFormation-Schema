@@ -1,0 +1,4 @@
+## 2024-05-18 - Fix XSS Vulnerability in Markdown Rendering
+**Vulnerability:** The `viewer.html` script previously used the `marked` library to render Markdown content and directly injected the output into the DOM via `innerHTML` without sanitization. Since the application could potentially load untrusted `.md` files or the user could be tricked into loading a malicious file via the URL hash, this exposed the viewer to a Cross-Site Scripting (XSS) vulnerability.
+**Learning:** Whenever directly rendering parsed content (like Markdown or HTML from external sources) into the DOM using `innerHTML`, there's a significant risk of XSS if the content is not properly sanitized. Relying solely on the Markdown parser to escape HTML is often insufficient.
+**Prevention:** Always use a robust HTML sanitization library, such as DOMPurify, to sanitize the output of Markdown parsers or any untrusted HTML content *before* inserting it into the DOM.
