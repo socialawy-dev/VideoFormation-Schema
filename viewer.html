@@ -287,6 +287,7 @@
 
     <!-- Markdown renderer -->
     <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.3.1/dist/purify.min.js"></script>
 
     <script>
         // Configuration
@@ -333,7 +334,7 @@
             `;
             
             const contentDiv = main.querySelector('.markdown-content');
-            contentDiv.innerHTML = marked.parse(content);
+            contentDiv.innerHTML = DOMPurify.sanitize(marked.parse(content));
 
             // Fix relative links to use viewer
             contentDiv.querySelectorAll('a').forEach(link => {
@@ -408,7 +409,7 @@
             document.getElementById('content').innerHTML = `
                 <div class="error">
                     <h2>⚠️ Error</h2>
-                    <p>${message}</p>
+                    <p>${DOMPurify.sanitize(message)}</p>
                     <a href="./" class="btn" style="margin-top: 20px; display: inline-block;">Back to Home</a>
                 </div>
             `;
@@ -436,7 +437,7 @@
                 } else {
                     // Fallback: render as plain text
                     document.getElementById('content').innerHTML = `
-                        <span class="file-type-badge">${extension.toUpperCase()}</span>
+                        <span class="file-type-badge">${DOMPurify.sanitize(extension.toUpperCase())}</span>
                         <div class="json-viewer">
                             <pre>${content.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
                         </div>
