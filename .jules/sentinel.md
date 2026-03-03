@@ -1,0 +1,4 @@
+## 2025-03-03 - [DOM XSS Vulnerability in viewer.html]
+**Vulnerability:** Found a DOM-based XSS vulnerability in `viewer.html` where user-controlled input (`window.location.hash` and parsed Markdown content) was dynamically written to the DOM using `innerHTML` without prior sanitization.
+**Learning:** Even client-side static viewers parsing markdown or displaying error messages can be vulnerable to DOM XSS if the outputs rendered to the screen contain unsafe HTML strings. Client-side routing and markdown parsers (`marked.parse`) require sanitization wrappers before writing to the DOM.
+**Prevention:** Always use a well-known sanitization library like `DOMPurify` (e.g., `DOMPurify.sanitize(content)`) before assigning unsanitized dynamic content into sinks like `element.innerHTML`.
