@@ -287,6 +287,7 @@
 
     <!-- Markdown renderer -->
     <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.5/dist/purify.min.js"></script>
 
     <script>
         // Configuration
@@ -295,6 +296,17 @@
         // Get file path from URL hash
         function getFilePath() {
             const hash = window.location.hash.slice(1);
+
+            // Validate hash to prevent path traversal and Open Redirects/SSRF
+            if (hash) {
+                if (hash.includes('../') || hash.includes('..\\')) {
+                    throw new Error('Path traversal is not allowed');
+                }
+                if (hash.includes('://') || hash.startsWith('//')) {
+                    throw new Error('Absolute URLs are not allowed');
+                }
+            }
+
             return hash || '/docs/README.md';
         }
 
@@ -333,7 +345,9 @@
             `;
             
             const contentDiv = main.querySelector('.markdown-content');
-            contentDiv.innerHTML = marked.parse(content);
+            const parsedMarkdown = marked.parse(content);
+            const sanitizedHtml = DOMPurify.sanitize(parsedMarkdown);
+            contentDiv.innerHTML = sanitizedHtml;
 
             // Fix relative links to use viewer
             contentDiv.querySelectorAll('a').forEach(link => {
@@ -435,8 +449,9 @@
                     renderJSON(content);
                 } else {
                     // Fallback: render as plain text
+                    const safeExtension = extension.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
                     document.getElementById('content').innerHTML = `
-                        <span class="file-type-badge">${extension.toUpperCase()}</span>
+                        <span class="file-type-badge">${safeExtension.toUpperCase()}</span>
                         <div class="json-viewer">
                             <pre>${content.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
                         </div>
@@ -447,13 +462,23 @@
             }
         }
 
+        // Helper to load file safely
+        function safeLoadFile() {
+            try {
+                const path = getFilePath();
+                loadFile(path);
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
         // Handle hash changes
         window.addEventListener('hashchange', () => {
-            loadFile(getFilePath());
+            safeLoadFile();
         });
 
         // Initial load
-        loadFile(getFilePath());
+        safeLoadFile();
     </script>
 </body>
 </html>
