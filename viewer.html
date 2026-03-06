@@ -287,6 +287,7 @@
 
     <!-- Markdown renderer -->
     <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
 
     <script>
         // Configuration
@@ -295,7 +296,16 @@
         // Get file path from URL hash
         function getFilePath() {
             const hash = window.location.hash.slice(1);
-            return hash || '/docs/README.md';
+            const path = hash || '/docs/README.md';
+
+            // Security: Prevent path traversal and external protocols
+            // Also decode URI to catch encoded traversals (%2e%2e) and normalize backslashes
+            const normalizedPath = decodeURIComponent(path).replace(/\\/g, '/');
+            if (normalizedPath.includes('..') || normalizedPath.includes('://') || normalizedPath.startsWith('//')) {
+                throw new Error('Invalid or unauthorized file path');
+            }
+
+            return path;
         }
 
         // Update breadcrumb
@@ -333,7 +343,8 @@
             `;
             
             const contentDiv = main.querySelector('.markdown-content');
-            contentDiv.innerHTML = marked.parse(content);
+            // Security: Sanitize markdown output with DOMPurify to prevent XSS
+            contentDiv.innerHTML = DOMPurify.sanitize(marked.parse(content));
 
             // Fix relative links to use viewer
             contentDiv.querySelectorAll('a').forEach(link => {
@@ -405,10 +416,12 @@
 
         // Show error
         function showError(message) {
+            // Security: Sanitize error message to prevent DOM XSS
+            const safeMessage = typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(message) : message.replace(/</g, '&lt;').replace(/>/g, '&gt;');
             document.getElementById('content').innerHTML = `
                 <div class="error">
                     <h2>⚠️ Error</h2>
-                    <p>${message}</p>
+                    <p>${safeMessage}</p>
                     <a href="./" class="btn" style="margin-top: 20px; display: inline-block;">Back to Home</a>
                 </div>
             `;
@@ -449,11 +462,19 @@
 
         // Handle hash changes
         window.addEventListener('hashchange', () => {
-            loadFile(getFilePath());
+            try {
+                loadFile(getFilePath());
+            } catch (error) {
+                showError(error.message);
+            }
         });
 
         // Initial load
-        loadFile(getFilePath());
+        try {
+            loadFile(getFilePath());
+        } catch (error) {
+            showError(error.message);
+        }
     </script>
 </body>
 </html>
