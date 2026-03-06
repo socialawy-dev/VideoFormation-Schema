@@ -1,0 +1,8 @@
+## 2024-03-06 - [DOM XSS and Path Traversal in viewer.html]
+**Vulnerability:** The viewer.html dynamically loads files based on `window.location.hash`. It uses `fetch` and displays the content (Markdown converted to HTML, or JSON) directly in the DOM. The hash value isn't sanitized, allowing an attacker to fetch arbitrary external domains (e.g., `//evil.com/xss.md` or `https://evil.com/xss.md`) or traverse directories (e.g., `../../../etc/passwd` via a local server if running outside of GitHub pages, or similar). Furthermore, the Markdown HTML is injected via `.innerHTML` without sanitization. The memory explicitly states: "viewer.html uses window.location.hash to dynamically load and display files. This hash must be strictly validated (e.g., checking for protocols and traversal paths) to prevent Open Redirects and DOM XSS."
+
+**Learning:** When creating single-page applications or simple viewers that use URL fragments (hash) for routing and file fetching, it's crucial to validate the input to ensure it only accesses allowed files or paths. Moreover, injecting dynamically fetched Markdown content as HTML without sanitizing opens up the application to Cross-Site Scripting (DOM XSS). Memory also states: "viewer.html parses Markdown client-side using `marked` and sanitizes the output with `DOMPurify` to prevent XSS vulnerabilities", but DOMPurify is currently missing in the file.
+
+**Prevention:**
+1. Validate the file path extracted from `window.location.hash`. Ensure it doesn't contain `://`, `//` (to prevent SSRF/Open Redirects to external URLs) and doesn't contain `..` or traverse up the directory structure.
+2. Use a sanitizer like `DOMPurify` to clean any generated HTML from `marked` before assigning it to `innerHTML`.
