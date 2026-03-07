@@ -287,6 +287,8 @@
 
     <!-- Markdown renderer -->
     <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <!-- DOMPurify for HTML sanitization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
 
     <script>
         // Configuration
@@ -294,8 +296,27 @@
         
         // Get file path from URL hash
         function getFilePath() {
-            const hash = window.location.hash.slice(1);
-            return hash || '/docs/README.md';
+            let hash = window.location.hash.slice(1);
+            if (!hash) return '/docs/README.md';
+
+            // Decode URI component to handle encoded traversal or malicious characters
+            try {
+                hash = decodeURIComponent(hash);
+            } catch (e) {
+                throw new Error('Invalid path encoding');
+            }
+
+            // Prevent path traversal
+            if (hash.includes('../') || hash.includes('..\\')) {
+                throw new Error('Path traversal is not allowed');
+            }
+
+            // Prevent absolute URLs / SSRF / Open Redirect
+            if (hash.startsWith('http://') || hash.startsWith('https://') || hash.startsWith('//')) {
+                throw new Error('External URLs are not allowed');
+            }
+
+            return hash;
         }
 
         // Update breadcrumb
@@ -327,13 +348,14 @@
         // Render markdown
         function renderMarkdown(content) {
             const main = document.getElementById('content');
-            main.innerHTML = `
+            main.innerHTML = DOMPurify.sanitize(`
                 <span class="file-type-badge">MARKDOWN</span>
                 <div class="markdown-content"></div>
-            `;
+            `);
             
             const contentDiv = main.querySelector('.markdown-content');
-            contentDiv.innerHTML = marked.parse(content);
+            // Sanitize parsed markdown to prevent DOM XSS
+            contentDiv.innerHTML = DOMPurify.sanitize(marked.parse(content));
 
             // Fix relative links to use viewer
             contentDiv.querySelectorAll('a').forEach(link => {
@@ -369,12 +391,12 @@
                 const formatted = JSON.stringify(parsed, null, 2);
                 const highlighted = syntaxHighlightJSON(formatted);
                 
-                main.innerHTML = `
+                main.innerHTML = DOMPurify.sanitize(`
                     <span class="file-type-badge">JSON</span>
                     <div class="json-viewer">
                         <pre>${highlighted}</pre>
                     </div>
-                `;
+                `);
             } catch (e) {
                 showError('Invalid JSON: ' + e.message);
             }
@@ -405,13 +427,14 @@
 
         // Show error
         function showError(message) {
-            document.getElementById('content').innerHTML = `
+            // Sanitize error message to prevent DOM XSS
+            document.getElementById('content').innerHTML = DOMPurify.sanitize(`
                 <div class="error">
                     <h2>⚠️ Error</h2>
                     <p>${message}</p>
                     <a href="./" class="btn" style="margin-top: 20px; display: inline-block;">Back to Home</a>
                 </div>
-            `;
+            `);
         }
 
         // Load and render file
@@ -435,12 +458,12 @@
                     renderJSON(content);
                 } else {
                     // Fallback: render as plain text
-                    document.getElementById('content').innerHTML = `
+                    document.getElementById('content').innerHTML = DOMPurify.sanitize(`
                         <span class="file-type-badge">${extension.toUpperCase()}</span>
                         <div class="json-viewer">
                             <pre>${content.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
                         </div>
-                    `;
+                    `);
                 }
             } catch (error) {
                 showError(error.message);
@@ -449,11 +472,19 @@
 
         // Handle hash changes
         window.addEventListener('hashchange', () => {
-            loadFile(getFilePath());
+            try {
+                loadFile(getFilePath());
+            } catch (error) {
+                showError(error.message);
+            }
         });
 
         // Initial load
-        loadFile(getFilePath());
+        try {
+            loadFile(getFilePath());
+        } catch (error) {
+            showError(error.message);
+        }
     </script>
 </body>
 </html>
